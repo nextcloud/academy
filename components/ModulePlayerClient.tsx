@@ -55,7 +55,7 @@ export default function ModulePlayerClient({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <TopBar />
+      <TopBar feedbackContext={`${trackTitle} / ${levelTitle} / ${moduleTitle}`} />
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <aside className="w-64 bg-gray-900 text-white flex-shrink-0 overflow-y-auto hidden md:block">

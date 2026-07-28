@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Nextcloud Developer Course',
-  description: 'Learn to build Nextcloud apps — PHP and ExApp tracks',
+  title: 'Nextcloud Developer Course (Beta)',
+  description: 'Learn to build Nextcloud apps — PHP and ExApp tracks. Beta: only the beginner tracks are written so far.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
