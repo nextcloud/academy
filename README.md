@@ -27,11 +27,18 @@ remaining levels are outlined in the manifest but not yet written:
 | ExApp — beginner | 8 modules | 8 |
 | PHP — intermediate / advanced | — | 14 / 11 |
 | ExApp — intermediate / advanced | — | 14 / 11 |
-| Shared | `setup.md` | + federation capstone lab |
+| Standalone modules (no prerequisites) | `shared/setup.md` | 18, across 5 categories |
+| Shared foundations + federation capstone | — | 2 + 1 |
 
-So `content/course-manifest.json` describes **66 modules while 16 exist**. That
-gap is intentional and known — the manifest is the plan, not a promise. Missing
-modules are tracked as issues.
+So `content/course-manifest.json` describes **87 modules while 17 files exist**.
+That gap is intentional and known — the manifest is the plan, not a promise.
+Missing modules are tracked as issues.
+
+The `standalone` section is separate from the tracks on purpose: those modules
+have no prerequisites and are meant to be readable on their own (l10n, REUSE,
+testing, Psalm, accessibility, App Store publishing, theming, GDPR, Smart Picker,
+and so on). Only `standalone-env-setup` is written so far — that is
+`content/shared/setup.md`.
 
 There is **no login and no user accounts**. Progress is stored per-browser in
 `localStorage` (`lib/progress.ts`), so it survives reloads but does not follow a
