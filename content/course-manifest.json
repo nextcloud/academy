@@ -1,0 +1,2860 @@
+{
+  "course": {
+    "id": "nextcloud-developer-course",
+    "title": "Nextcloud Developer Course",
+    "version": "1.0.0",
+    "tracks": [
+      "php",
+      "exapp"
+    ]
+  },
+  "shared": {
+    "foundations": [
+      {
+        "id": "how-nextcloud-works",
+        "title": "How Nextcloud Works",
+        "description": "Architecture overview for both tracks — request lifecycle, the app layer, multi-tenancy. Required before either track.",
+        "estimated_minutes": 20,
+        "official_docs": [
+          "https://docs.nextcloud.com/server/latest/developer_manual/basics/request_lifecycle.html"
+        ]
+      },
+      {
+        "id": "federation-concepts",
+        "title": "Federation Concepts",
+        "description": "What federation means in Nextcloud, the OCM protocol, and how two instances trust each other. Shared prerequisite for both Advanced federation modules.",
+        "estimated_minutes": 15,
+        "official_docs": [
+          "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/rest_apis.html"
+        ]
+      }
+    ],
+    "capstone": {
+      "id": "federation-lab",
+      "title": "Federation Capstone Lab",
+      "description": "Spin up both Pinboard implementations and federate them. Can be attempted after completing either Advanced federation module.",
+      "downloads": [
+        {
+          "id": "pinboard-php-federation",
+          "label": "Pinboard PHP — Federation Starting Point",
+          "repo": "nextcloud-dev-course/pinboard-php",
+          "git_tag": "FEDERATION_STARTING_POINT",
+          "for_track": "exapp",
+          "description": "Pre-built PHP Pinboard for ExApp-track students who haven't done the PHP track"
+        },
+        {
+          "id": "pinboard-exapp-federation",
+          "label": "Pinboard ExApp — Federation Starting Point",
+          "repo": "nextcloud-dev-course/pinboard-exapp",
+          "git_tag": "FEDERATION_STARTING_POINT",
+          "for_track": "php",
+          "description": "Pre-built Python ExApp Pinboard for PHP-track students who haven't done the PHP track"
+        },
+        {
+          "id": "federation-lab-compose",
+          "label": "Federation Lab — Docker Compose",
+          "repo": "nextcloud-dev-course/pinboard-federation-lab",
+          "git_tag": "main",
+          "for_track": "both",
+          "description": "Two pre-wired Nextcloud instances with both Pinboard apps installed"
+        }
+      ]
+    }
+  },
+  "tracks": {
+    "php": {
+      "id": "php",
+      "title": "PHP App Track",
+      "tagline": "Build a Nextcloud app using PHP and Vue.js",
+      "persona": "Knows PHP or JS. Has not worked with Nextcloud internals before.",
+      "repo": "nextcloud-dev-course/pinboard-php",
+      "counterpart_track": "exapp",
+      "levels": {
+        "beginner": {
+          "id": "beginner",
+          "title": "Beginner",
+          "tagline": "Ship your first working Nextcloud app",
+          "persona": "Has base programming knowledge, wants to build a Nextcloud app for the first time",
+          "app_state": "Basic CRUD Pinboard — personal notes only, no sharing",
+          "estimated_hours": "10–12",
+          "modules": [
+            {
+              "id": "php-b-01",
+              "index": 1,
+              "title": "Environment Setup",
+              "description": "Install and configure a Nextcloud development environment using Docker or GitHub Codespaces.",
+              "estimated_minutes": 45,
+              "git_tag_start": null,
+              "git_tag_end": "php/beginner/m1-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/getting_started/devenv.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Setting up a development environment",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F1%20Setting%20up%20a%20development%20environment",
+                  "usage": "pre-reading"
+                },
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "GitHub Codespaces quick setup",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F%2F1a%20Set%20up%20a%20quick%20development%20environment%20with%20GitHub%20Codespaces",
+                  "usage": "optional-alternative"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-01",
+                  "preview": "You'll revisit the bootstrap sequence when we trace exactly what happens between nginx and your controller"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-01",
+                "note": "ExApp setup requires the AppAPI daemon — meaningfully different, but the Codespaces path is similar"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-02",
+              "index": 2,
+              "title": "App Anatomy",
+              "description": "Understand the structure of a Nextcloud app — directories, the manifest, routing, and the bootstrap class.",
+              "estimated_minutes": 40,
+              "git_tag_start": "php/beginner/m1-complete",
+              "git_tag_end": "php/beginner/m2-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_development/intro.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_development/info.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_development/bootstrap.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Develop your first Hello World app",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F%2F2%20Develop%20your%20first%20Hello%20World%20app",
+                  "usage": "pre-reading"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-01",
+                  "preview": "The OCP contract underlying these namespaces gets a full treatment at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-01",
+                  "preview": "At Advanced you'll trace how the DI container resolves the services you register here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-02",
+                "note": "ExApp manifest and registration is conceptually similar but lives in a different format — worth comparing"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-03",
+              "index": 3,
+              "title": "Backend Fundamentals",
+              "description": "Controllers, the OCP namespace, dependency injection in practice, and returning your first responses.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/beginner/m2-complete",
+              "git_tag_end": "php/beginner/m3-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/controllers.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/dependency_injection.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/routing.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Developing a simple interface-only app",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F3%20Developing%20a%20simple%20interface-only%20app",
+                  "usage": "pre-reading"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-01",
+                  "preview": "Why OCP exists — and what happens if you use OC directly — becomes clear at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-01",
+                  "preview": "Advanced traces the full DI container internals and lazy proxy resolution"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-07",
+                  "preview": "The controller patterns from here become a versioned REST API at Intermediate"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-03",
+                "note": "ExApp request handlers and nc_py_api fill the same role as PHP controllers — different mechanism, same purpose"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-04",
+              "index": 4,
+              "title": "Database Layer",
+              "description": "Create your first migration, define entities, and read/write data with QBMapper.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/beginner/m3-complete",
+              "git_tag_end": "php/beginner/m4-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/storage/index.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Developing a complete app with navigation and database",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F6%20Developing%20a%20complete%20app%20with%20a%20navigation%20bar%20and%20database",
+                  "usage": "pre-reading"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-13",
+                  "preview": "N+1 queries and caching strategies revisit exactly this mapper code"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-05",
+                  "preview": "At Advanced you'll stress-test these queries against a 10M-row filecache scenario"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-02",
+                  "preview": "Boards introduce a new entity and a migration adding board_id to the pins table you build here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-04",
+                "note": "ExApps use Nextcloud's KV store or their own sidecar DB — a different tradeoff worth understanding"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-05",
+              "index": 5,
+              "title": "Frontend Toolchain",
+              "description": "Set up Vite, install npm dependencies, wire the PHP template to a Vue entry point, and verify the build pipeline works.",
+              "estimated_minutes": 45,
+              "git_tag_start": "php/beginner/m4-complete",
+              "git_tag_end": "php/beginner/m5-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/front-end/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-09",
+                  "preview": "The build pipeline you set up here gets extended with ESLint, Stylelint, and CI automation at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-05",
+                "note": "ExApp UIs use the same @nextcloud/vue components — frontend skills transfer almost entirely"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-06",
+              "index": 6,
+              "title": "Your First Vue Component",
+              "description": "Build the Pinboard UI in three stages — fetch and display pins, add loading and empty states, then wire up a form to create new ones.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/beginner/m5-complete",
+              "git_tag_end": "php/beginner/m6-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/front-end/index.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/design/index.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/html_css_design/index.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Developing a dashboard widget with Vue.js",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F4%20Developing%20a%20dashboard%20widget%20with%20Vue.js",
+                  "usage": "supplementary"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-13",
+                  "preview": "Frontend performance — lazy-loading components and pagination — revisits this at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-04",
+                  "preview": "Real-time UI patterns (SSE, long-polling) build directly on what you set up here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "preview": "Component architecture and Pinia state management replace the monolithic App.vue at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-12",
+                  "preview": "Optimistic updates with proper rollback and lazy-loading are covered at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-03",
+                  "preview": "Component architecture and Pinia state management replace the monolithic App.vue at Intermediate"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-06",
+                "note": "ExApp UIs use the same @nextcloud/vue components — frontend skills transfer almost entirely"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-07",
+              "index": 7,
+              "title": "Users and Basic Permissions",
+              "description": "Get the current user, scope all queries to them, and understand basic capability checks.",
+              "estimated_minutes": 30,
+              "git_tag_start": "php/beginner/m6-complete",
+              "git_tag_end": "php/beginner/m7-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/users.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-06",
+                  "preview": "The full sharing model — boards, groups, link shares, ACLs — builds on this at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-06",
+                  "preview": "Capability-based access control and rate limiting revisit the permission model at Advanced"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-06",
+                  "preview": "Notifications tie directly to user identity — who to notify and why — built on the session model here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-07",
+                "note": "ExApps verify user identity via the AppAPI auth handshake rather than IUserSession"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-b-08",
+              "index": 8,
+              "title": "Packaging and Distribution",
+              "description": "Version your app, sign it, and submit it to the Nextcloud app store.",
+              "estimated_minutes": 45,
+              "git_tag_start": "php/beginner/m7-complete",
+              "git_tag_end": "php/beginner/m8-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/release_process.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/code_signing.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/publishing.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-09",
+                  "preview": "Full CI/CD pipeline for automated releases revisits this at Advanced"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-10",
+                  "preview": "Zero-downtime migration strategy for apps already in the store is an Advanced topic"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-14",
+                  "preview": "Testing your packaged app against multiple Nextcloud versions is an Intermediate concern"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-08",
+                "note": "ExApp packaging involves a Docker image and AppAPI registration — similar goals, different mechanics"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            }
+          ]
+        },
+        "intermediate": {
+          "id": "intermediate",
+          "title": "Intermediate",
+          "tagline": "Make your app production-ready and idiomatic",
+          "persona": "Has a working app, wants to add organisation, sharing, notifications, and real API design",
+          "app_state": "Pinboard with boards, sharing, ACLs, notifications, public pages, REST API, background jobs, admin settings",
+          "estimated_hours": "18–22",
+          "modules": [
+            {
+              "id": "php-i-01",
+              "index": 1,
+              "title": "The OCP Contract",
+              "description": "Why the OCP abstraction layer exists, what's public API and what isn't, and how to navigate deprecations across versions.",
+              "estimated_minutes": 45,
+              "git_tag_start": "php/beginner/m8-complete",
+              "git_tag_end": "php/intermediate/m1-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/prologue/compatibility_app_ecosystem.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-02",
+                  "note": "You registered services in the DI container at Beginner — now you'll understand why the OCP boundary protects them"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-08",
+                  "preview": "Contributing to the public API committee and what gets into OCP is an Advanced topic"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-02",
+              "index": 2,
+              "title": "Boards",
+              "description": "Introduce boards as an organisational layer — a new entity, a migration adding nullable board_id to pins, and the uncategorised pseudo-board pattern. Add and remove pins from boards, list pins by board.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/intermediate/m1-complete",
+              "git_tag_end": "php/intermediate/m2-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/storage/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-04",
+                  "note": "The pins table from Beginner M4 gets a nullable board_id column added here via migration"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-03",
+                  "note": "The controller and routing patterns from Beginner M3 are extended with board-specific endpoints here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "preview": "Boards are what you share in I-04 — this module makes them worth sharing"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-03",
+                  "preview": "Federation extends board sharing across instances — Advanced M3 builds directly on this"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-02",
+                "note": "ExApps can interact with boards via the REST API introduced in I-07"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-03",
+              "index": 3,
+              "title": "Component Architecture and State Management",
+              "description": "Split the monolithic App.vue into a proper component tree — BoardList, PinList, PinCard. Introduce Pinia for shared state so boards and pins are accessible across components without prop drilling. Understand when to split a component and how to design the store around the app's data model.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/intermediate/m2-complete",
+              "git_tag_end": "php/intermediate/m3-complete",
+              "official_docs": [
+                "https://pinia.vuejs.org/",
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/front-end/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-06",
+                  "note": "The monolithic App.vue from Beginner M6 is what gets split and refactored here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "php-i-05",
+                  "preview": "The component structure built here is extended with navigation and picker components in I-05"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-04",
+                  "preview": "Real-time updates require reactive state — the Pinia store built here is what SSE and long-polling update"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-04",
+                "note": "ExApp UIs use the same Vue component patterns — Pinia is available to both"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-04",
+              "index": 4,
+              "title": "Sharing and ACLs",
+              "description": "Nextcloud's sharing model applied to Pinboard boards and individual pins. User shares, group shares, link shares, password-protected shares, and email invites. The permission bitmask — read, create, update, delete, share — and how to check and enforce each. Public board pages with #[PublicPage] and share tokens.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/intermediate/m3-complete",
+              "git_tag_end": "php/intermediate/m4-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/sharing.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-07",
+                  "note": "User scoping from Beginner M7 is the foundation — sharing extends ownership to multiple users"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-03",
+                  "preview": "Federation extends the sharing model across instances — Advanced M3 builds directly on it"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-06",
+                  "preview": "Security hardening audits the ACL checks you write here against OWASP Top 10"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-03",
+                "note": "ExApps interact with the same share manager via OCS — the model is identical"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-05",
+              "index": 5,
+              "title": "Advanced @nextcloud/vue — Navigation, Pickers, and Actions",
+              "description": "NcAppNavigation for the board sidebar, NcSelect for user and group pickers in the share dialog, NcActionButton for per-pin actions, NcDialog for confirmations. Keyboard navigation and focus management. Accessibility in practice — ARIA live regions for dynamic pin lists, focus trapping in modals.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/intermediate/m4-complete",
+              "git_tag_end": "php/intermediate/m5-complete",
+              "official_docs": [
+                "https://nextcloud-vue-components.netlify.app/"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "The share dialog built here is driven by the sharing model from I-04"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-03",
+                  "note": "The component structure from I-03 is extended with the board sidebar and action menus here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-04",
+                  "preview": "Dashboard widgets at Advanced use the same NcAppNavigation patterns extended here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-b-04",
+                "note": "ExApp UIs use the same @nextcloud/vue components — this module applies directly to both tracks"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-06",
+              "index": 6,
+              "title": "Notifications and Activity",
+              "description": "INotificationManager and IActivityManager driven by real Pinboard events — alice shared a board with you, bob added a pin to Research, a board you follow has new pins. Email notifications via IMailer for share invites.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/intermediate/m5-complete",
+              "git_tag_end": "php/intermediate/m6-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/notifications.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/email.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "Share events from I-04 are the triggers for the notifications built here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-04",
+                  "preview": "Dashboard widgets and real-time feeds extend these notifications at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-05",
+                "note": "ExApps send notifications via the same OCS API — same user experience, different code path"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-07",
+              "index": 7,
+              "title": "REST API Design",
+              "description": "Build a proper versioned REST API for boards and pins. OCS vs plain JSON, authentication strategies, and testing with curl and Bruno. The Initial State mechanism — provideInitialState() in the controller paired with loadState() in the frontend — eliminates the initial API round-trip by injecting server data directly into the page on load.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/intermediate/m6-complete",
+              "git_tag_end": "php/intermediate/m7-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/rest_apis.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-03",
+                  "note": "Controllers from Beginner M3 become versioned API endpoints here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-03",
+                  "preview": "Federation uses this API as the transport layer — Advanced M3 builds directly on it"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-03",
+                "note": "Same OCS contract consumed from Python — worth comparing how the two sides see the same spec"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-08",
+              "index": 8,
+              "title": "Security",
+              "description": "CSRF, input validation, output escaping, SQL injection prevention, and auditing board and share permission checks against OWASP Top 10.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/intermediate/m7-complete",
+              "git_tag_end": "php/intermediate/m8-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/security.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/prologue/security.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-07",
+                  "note": "User scoping from Beginner is the first line of defence — we audit it here alongside the new ACL checks"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-06",
+                  "preview": "CSP, rate limiting, audit logging, and supply chain security are the Advanced extension"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-01",
+                "note": "ExApp auth handshake and request signature verification is a different but parallel security topic"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-09",
+              "index": 9,
+              "title": "Background Jobs",
+              "description": "IJob, TimedJob, QueuedJob — when to use each, registration, failure handling, and progress reporting. Exercise: a digest job summarising new pins added to shared boards.",
+              "estimated_minutes": 50,
+              "git_tag_start": "php/intermediate/m8-complete",
+              "git_tag_end": "php/intermediate/m9-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/backgroundjobs.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-06",
+                  "note": "Notifications from I-06 are the output of the digest job built here"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-04",
+                  "note": "The QBMapper pattern from Beginner M4 is what the background digest job queries"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-04",
+                  "preview": "Real-time patterns and long-running tasks revisit the boundary between jobs and push at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-04",
+                "note": "ExApps handle async work in their own service process — a meaningfully different tradeoff"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-10",
+              "index": 10,
+              "title": "Search",
+              "description": "Implement ISearchProvider for pins and boards — indexing strategy, what to surface in unified search, and scoping results to boards the user can access.",
+              "estimated_minutes": 45,
+              "git_tag_start": "php/intermediate/m9-complete",
+              "git_tag_end": "php/intermediate/m10-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/search.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "Search results must respect the share ACLs from I-04 — a shared board's pins are searchable by the recipient"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-05",
+                  "preview": "Search query performance against large datasets is an Advanced concern"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-11",
+              "index": 11,
+              "title": "Settings and Admin Panel",
+              "description": "ISettings for personal and admin scopes, IConfig for instance-wide configuration. Exercise: admin toggle to disable public board sharing instance-wide.",
+              "estimated_minutes": 40,
+              "git_tag_start": "php/intermediate/m10-complete",
+              "git_tag_end": "php/intermediate/m11-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/settings.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/config/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "The public sharing toggle gates the #[PublicPage] share feature from I-04"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-05",
+                  "preview": "Instance-wide config interacts with horizontal scaling in ways that matter at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-06",
+                "note": "ExApp settings panels are served from the external service but registered the same way"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-12",
+              "index": 12,
+              "title": "Frontend Performance and UX",
+              "description": "Lazy-loading Vue components with defineAsyncComponent for heavy views like the share dialog. Optimistic updates with rollback when the server rejects a change. Pagination and infinite scroll for large pin lists. Debouncing search input. Skeleton loading states instead of spinners.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/intermediate/m11-complete",
+              "git_tag_end": "php/intermediate/m12-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/performance.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-06",
+                  "note": "The Vue component from Beginner M6 gets the optimistic update pattern properly implemented here — with rollback"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-03",
+                  "note": "The Pinia store from I-03 is what optimistic updates and rollbacks modify"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-04",
+                  "preview": "Real-time UI patterns (SSE, long-polling) extend the reactive update model built here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-07",
+                "note": "ExApp frontend performance has the same concerns — the Vue patterns are identical"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-13",
+              "index": 13,
+              "title": "Backend Performance",
+              "description": "N+1 query detection and caching with ICache and IMemcache applied to board and pin queries.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/intermediate/m12-complete",
+              "git_tag_end": "php/intermediate/m13-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/performance.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/caching.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-04",
+                  "note": "The QBMapper queries from Beginner M4, now extended with board joins, are the subject of the N+1 audit here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-05",
+                  "preview": "Distributed locking, object storage, and filecache scale take performance much further at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-07",
+                "note": "ExApp performance concerns differ — connection pooling and Nextcloud API call overhead dominate"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-i-14",
+              "index": 14,
+              "title": "Testing",
+              "description": "PHPUnit setup, unit vs integration tests, mocking Nextcloud services including the share manager and notification manager. Frontend testing with Jest.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/intermediate/m13-complete",
+              "git_tag_end": "php/intermediate/m14-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/testing.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/server/unit-testing.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Adding automated tests to your app",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F7%20Adding%20automated%20tests%20to%20your%20app",
+                  "usage": "pre-reading"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-03",
+                  "note": "The first controllers from Beginner M3 are the subject of the first unit tests written here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "php-a-09",
+                  "preview": "Static analysis, Psalm, and multi-version CI matrix testing extend this at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-08",
+                "note": "ExApp testing strategy differs — the service can be tested independently of Nextcloud"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            }
+          ]
+        },
+        "advanced": {
+          "id": "advanced",
+          "title": "Advanced",
+          "tagline": "Understand internals, scale confidently, contribute upstream",
+          "persona": "Has shipped a Nextcloud app, wants deeper internals knowledge and production-scale confidence",
+          "app_state": "Pinboard with federation, real-time board updates, file attachments, event-driven notifications, production-hardened security and performance",
+          "estimated_hours": "16–22",
+          "modules": [
+            {
+              "id": "php-a-01",
+              "index": 1,
+              "title": "Nextcloud Internals",
+              "description": "The full bootstrap sequence from HTTP request to controller call. DI container internals — how constructor parameters are resolved, lazy proxies, named parameters like $userId. OC_Hook legacy system vs IEventDispatcher. How Nextcloud's classloader maps namespaces to directories.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/intermediate/m14-complete",
+              "git_tag_end": "php/advanced/m1-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/server/architecture/index.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/classloader.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-02",
+                  "note": "The app bootstrap class you wrote at Beginner M2 — now you'll see exactly how Nextcloud calls it"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-03",
+                  "note": "DI from Beginner M3 gets its full internal explanation here — including why $userId resolves by name"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-01",
+                  "note": "The OCP boundary from Intermediate I-01 makes sense once you see how the container resolves services"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-02",
+              "index": 2,
+              "title": "Event-Driven Architecture",
+              "description": "IEventDispatcher — publishing and subscribing to events. Designing Pinboard event classes for board creation, pin addition, and share changes. Decoupling notifications, activity, and search indexing from controller logic so they listen independently. Avoiding circular dependencies in event handlers.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/advanced/m1-complete",
+              "git_tag_end": "php/advanced/m2-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/events.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-06",
+                  "note": "Notifications from I-06 are currently wired directly to controllers — events decouple them here"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-09",
+                  "note": "The background digest job from I-09 becomes an event subscriber rather than a polling loop"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-10",
+                  "note": "Search indexing from I-10 can react to board and pin events rather than being called directly"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-a-01",
+                "note": "ExApps receive events via webhook callbacks rather than in-process listeners — a useful contrast"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-03",
+              "index": 3,
+              "title": "Federation",
+              "description": "The OCM protocol, implementing ICloudFederationProvider for Pinboard boards. Sharing a board with a user on a remote Nextcloud instance, remote user identity and trust boundaries. Handling incoming share notifications and syncing pin activity across instances.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/advanced/m2-complete",
+              "git_tag_end": "php/advanced/m3-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "The sharing model from I-04 extends across instance boundaries here"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-07",
+                  "note": "The REST API from I-07 is the transport layer for OCM notifications"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-06",
+                  "note": "Cross-instance notifications — alice on one server notified when bob on another adds a pin"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-a-03",
+                "note": "ExApp federation counterpart — both sides implement OCM; the capstone connects them"
+              },
+              "federation_capstone": true,
+              "downloads": [
+                {
+                  "ref": "pinboard-exapp-federation",
+                  "label": "Download Pinboard ExApp — Federation Starting Point",
+                  "description": "The Python ExApp counterpart to federate against if you haven't done the ExApp track"
+                },
+                {
+                  "ref": "federation-lab-compose",
+                  "label": "Download Federation Lab Docker Compose",
+                  "description": "Two pre-wired Nextcloud instances ready for the federation exercise"
+                }
+              ]
+            },
+            {
+              "id": "php-a-04",
+              "index": 4,
+              "title": "Real-Time and Collaborative Features",
+              "description": "Server-Sent Events (SSE) and long-polling to push live updates to shared boards — new pins appear without refresh. Dashboard widget showing recent activity across all boards. URL preview data fetching as a background job triggered on pin creation, with Open Graph metadata stored and surfaced in the UI. The limits of Nextcloud's notification polling mechanism.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/advanced/m3-complete",
+              "git_tag_end": "php/advanced/m4-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/dashboard.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/notifications.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-03",
+                  "note": "The Pinia store from I-03 is what SSE events update — reactive state already in place"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-06",
+                  "note": "Notifications from I-06 are extended into real-time delivery here"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-09",
+                  "note": "Background jobs from I-09 are the mechanism for async URL preview fetching"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-12",
+                  "note": "The optimistic update patterns from I-12 interact with SSE — both can update the same store"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-05",
+              "index": 5,
+              "title": "Files and Storage Internals",
+              "description": "The storage abstraction stack (IStorage, Jail, Wrapper). File attachments on pins — storing files in the user's Nextcloud rather than as blobs. Mount points and file IDs across mounts, why you can't trust paths alone. Chunked upload handling. WebDAV from the frontend for direct file operations.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/advanced/m4-complete",
+              "git_tag_end": "php/advanced/m5-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/files-metadata.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/client_apis/WebDAV/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-04",
+                  "note": "The storage mention in Beginner M4 glossed over this — here's the full stack"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "File attachments inherit the board's share ACLs — the permission model extends to files here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-i-02",
+                "note": "ExApps access files via WebDAV — understanding the storage stack explains why certain things behave unexpectedly"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-06",
+              "index": 6,
+              "title": "Caching and Distributed State",
+              "description": "ICacheFactory in depth — local, distributed, and Redis-backed caches and when to use each. Distributed locking with ILockingProvider for concurrent board edits (two users adding a pin simultaneously). Cache invalidation strategies for board membership and share ACLs. IMemcache vs ICache — the distinction that matters under load.",
+              "estimated_minutes": 60,
+              "git_tag_start": "php/advanced/m5-complete",
+              "git_tag_end": "php/advanced/m6-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/caching.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/deadlock.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-13",
+                  "note": "N+1 fixes from I-13 are the prerequisite — caching only helps queries that are already correct"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "Share ACL lookups are the most cache-worthy queries — invalidation must be correct when shares change"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-07",
+              "index": 7,
+              "title": "Scalability and Multi-Instance",
+              "description": "How Nextcloud handles horizontal scaling — stateless vs stateful components. The filecache table at scale and why large queries against it are dangerous. Object storage (S3/Swift) implications for file attachments on pins. Designing board and pin queries to be safe at 10M+ rows.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/advanced/m6-complete",
+              "git_tag_end": "php/advanced/m7-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/performance.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/deadlock.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-13",
+                  "note": "N+1 fixes from I-13 — now stress-tested against 10M-row scenarios"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-04",
+                  "note": "The original QBMapper queries from Beginner M4 are the subject of the production-scale audit here"
+                },
+                {
+                  "direction": "back",
+                  "level": "advanced",
+                  "module_id": "php-a-06",
+                  "note": "Distributed locking from A-06 is what prevents race conditions at this scale"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-a-05",
+                "note": "ExApp horizontal scaling has different concerns — stateless service vs stateful PHP process"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-08",
+              "index": 8,
+              "title": "Security Hardening",
+              "description": "Content Security Policy builder, ISecureRandom vs ICrypto — when to use each. Capability-based access control patterns. Rate limiting on share creation and public board endpoints with IRateLimiter. Audit logging for share events. Supply chain — evaluating JS dependencies, composer security advisories, REUSE compliance.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/advanced/m7-complete",
+              "git_tag_end": "php/advanced/m8-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/security.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-08",
+                  "note": "The Intermediate security checklist is the baseline — this module hardens it to production posture"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-04",
+                  "note": "Share creation and public board endpoints are the rate limiting targets here"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-07",
+                  "note": "User scoping from Beginner is now evaluated against OWASP Top 10"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-a-06",
+                "note": "ExApp supply chain includes the container image — different but parallel hardening exercise"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-09",
+              "index": 9,
+              "title": "Contributing Upstream",
+              "description": "Reading and navigating the Nextcloud server codebase. The backport process and stable branch rules. Writing a compelling RFC or GitHub discussion. Working with the public API committee — what gets into OCP and what doesn't. Running the full Nextcloud test suite locally.",
+              "estimated_minutes": 60,
+              "git_tag_start": null,
+              "git_tag_end": null,
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/prologue/help_communication.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/prologue/bugtracker/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-01",
+                  "note": "Understanding what gets into OCP — from I-01 — is the prerequisite for proposing additions"
+                },
+                {
+                  "direction": "back",
+                  "level": "advanced",
+                  "module_id": "php-a-01",
+                  "note": "Nextcloud Internals from A-01 is essential context for navigating the server codebase"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-a-07",
+                "note": "Contributing to AppAPI itself is the ExApp parallel — same process, different codebase"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-10",
+              "index": 10,
+              "title": "CI/CD and App Quality",
+              "description": "GitHub Actions for Nextcloud apps — the standard workflow templates. Automated compatibility testing across Nextcloud versions. Psalm with Nextcloud stubs, PHP-CS-Fixer, ESLint, and Stylelint. App store release automation. REUSE compliance in CI.",
+              "estimated_minutes": 75,
+              "git_tag_start": "php/advanced/m8-complete",
+              "git_tag_end": "php/advanced/m10-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/continuous_integration.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/server/static-analysis.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/release_automation.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-14",
+                  "note": "The test suite from I-14 gets wired into the CI matrix here"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-08",
+                  "note": "Manual app store release from Beginner M8 becomes fully automated here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "exapp",
+                "module_id": "ex-a-08",
+                "note": "ExApp CI adds Docker image builds and multi-arch — worth comparing pipelines side by side"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "php-a-11",
+              "index": 11,
+              "title": "Architecture Patterns for Complex Apps",
+              "description": "When to split Pinboard into multiple apps — board app vs pin app — and the library app pattern for shared code. Sidecar processes and IPC. Zero-downtime migrations for apps with active installs. Migrating from autoincrement to SnowflakeAwareEntity primary keys on a table with existing data. The decision framework for when an app should become an ExApp. Closes with a self-directed extensions section pointing to bonus module candidates.",
+              "estimated_minutes": 90,
+              "git_tag_start": "php/advanced/m10-complete",
+              "git_tag_end": "php/advanced/m11-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/app_upgrade_guide/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-08",
+                  "note": "Packaging from Beginner M8 — now applied to a breaking schema change with 10k active installs"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "php-i-01",
+                  "note": "OCP versioning from I-01 underpins safe multi-app API design"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "php-b-04",
+                  "note": "The autoincrement primary keys from Beginner M4 get migrated to Snowflake IDs here"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": [],
+              "extensions": [
+                {
+                  "id": "ext-pinned-contacts",
+                  "title": "Pinned Contacts",
+                  "description": "Integrate with CardDAV via IContactsManager to pin a contact card alongside URLs. Explore how Nextcloud apps consume data from other apps without coupling.",
+                  "bonus_module_candidate": true
+                },
+                {
+                  "id": "ext-talk-integration",
+                  "title": "Talk Integration",
+                  "description": "Share a board to a Talk room and post pin activity as Talk messages via the Talk bot API. Introduction to cross-app integration patterns.",
+                  "bonus_module_candidate": true
+                },
+                {
+                  "id": "ext-pin-notes",
+                  "title": "Notes on Pins and Boards",
+                  "description": "Attach rich text notes to pins or boards using @nextcloud/text or plain markdown stored as a separate entity. Explores content storage patterns and the Text app integration.",
+                  "bonus_module_candidate": true
+                },
+                {
+                  "id": "ext-collaborative-board-notes",
+                  "title": "Collaborative Board Notes",
+                  "description": "Attach a collaboratively editable note to each board using the Text app or Collectives. Explores real-time collaborative editing integration patterns.",
+                  "bonus_module_candidate": false
+                },
+                {
+                  "id": "ext-dashboard-widget",
+                  "title": "Advanced Dashboard Widget",
+                  "description": "A richer dashboard widget showing recent pins, board activity, and unread share notifications — extending the basic widget introduced in A-04.",
+                  "bonus_module_candidate": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "exapp": {
+      "id": "exapp",
+      "title": "ExApp Track",
+      "tagline": "Build a Nextcloud ExApp using Python and AppAPI",
+      "persona": "Knows Python, wants to extend Nextcloud without writing PHP.",
+      "repo": "nextcloud-dev-course/pinboard-exapp",
+      "counterpart_track": "php",
+      "levels": {
+        "beginner": {
+          "id": "beginner",
+          "title": "Beginner",
+          "tagline": "Ship your first working Nextcloud ExApp",
+          "persona": "Knows Python, has not worked with Nextcloud internals before",
+          "app_state": "Basic CRUD Pinboard ExApp — personal pins, no boards, no sharing",
+          "estimated_hours": "10–12",
+          "modules": [
+            {
+              "id": "ex-b-01",
+              "index": 1,
+              "title": "Environment Setup",
+              "description": "Install Nextcloud, AppAPI, and the ExApp daemon. Understand the Docker-based deployment model and how an ExApp registers with Nextcloud. First occ app_api:app:register cycle.",
+              "estimated_minutes": 60,
+              "git_tag_start": null,
+              "git_tag_end": "exapp/beginner/m1-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/exapp_development/DevSetup.html"
+              ],
+              "reuses_existing": [
+                {
+                  "source": "nextcloud.com/developer tutorial",
+                  "title": "Develop your first ExApp in Python",
+                  "url": "https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=%2F8%20Develop%20your%20first%20ExApp%20in%20Python",
+                  "usage": "pre-reading"
+                }
+              ],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-01",
+                  "preview": "At Advanced you'll understand exactly how the AppAPI daemon mediates every request"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-01",
+                "note": "PHP track env setup is simpler — no daemon required. Worth knowing if you ever need to debug the Nextcloud side"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-02",
+              "index": 2,
+              "title": "ExApp Anatomy and Request Lifecycle",
+              "description": "The ExApp manifest, registration with AppAPI, nc_py_api basics. How Nextcloud calls your service — the signing protocol, what headers arrive, and what you must verify before trusting a request. The ExApp lifecycle vs a PHP app lifecycle.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/beginner/m1-complete",
+              "git_tag_end": "exapp/beginner/m2-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/exapp_development/Introduction.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/exapp_development/tech_details/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-01",
+                  "preview": "Request signature verification gets its full security treatment at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-01",
+                  "preview": "The registration flow you do manually here is fully automated and explained at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-02",
+                "note": "PHP app anatomy is different in structure but parallel in purpose — appinfo/info.xml vs ExApp manifest"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-03",
+              "index": 3,
+              "title": "Backend Fundamentals",
+              "description": "Request handlers with FastAPI, nc_py_api for calling Nextcloud APIs, and returning JSON responses from your first Pinboard endpoints. How requests reach your Python service and how to return typed responses — the ExApp equivalent of PHP controllers.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/beginner/m2-complete",
+              "git_tag_end": "exapp/beginner/m3-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-07",
+                  "preview": "The endpoint patterns from here become a versioned REST API at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-01",
+                  "preview": "At Advanced you will understand the full AppAPI request routing internals behind these handlers"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-03",
+                "note": "PHP controllers and ExApp request handlers serve the same role — routing HTTP requests to handler functions and returning responses — via very different mechanisms"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-04",
+              "index": 4,
+              "title": "Database Layer",
+              "description": "Nextcloud's KV store via nc_py_api for lightweight config, your own SQLite/Postgres sidecar for structured pin data, and when to use each. Define the pins table, write basic CRUD, scope all queries to the current user.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/beginner/m3-complete",
+              "git_tag_end": "exapp/beginner/m4-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-02",
+                  "preview": "Boards introduce a new entity and a migration adding board_id to the pins table you build here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-12",
+                  "preview": "N+1 query detection and caching are applied to the queries built here at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "preview": "Horizontal scaling changes sidecar DB assumptions significantly — Advanced A-05"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-04",
+                "note": "PHP uses QBMapper against Nextcloud's own DB — ExApp sidecar approach is a fundamentally different tradeoff worth understanding"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-05",
+              "index": 5,
+              "title": "Frontend Toolchain",
+              "description": "Set up Vite and Vue for an ExApp — serving static assets from the Python service, wiring the registered top-level entry to a Vue entry point. The ExApp frontend model differs from PHP apps: assets are served by your service, not by Nextcloud.",
+              "estimated_minutes": 45,
+              "git_tag_start": "exapp/beginner/m4-complete",
+              "git_tag_end": "exapp/beginner/m5-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/front-end/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-09",
+                  "preview": "The build pipeline here gets extended with ESLint, Stylelint, and CI automation at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-05",
+                "note": "PHP frontend toolchain is identical — Vite, @nextcloud/vue, same packages. The difference is where assets are served from"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-06",
+              "index": 6,
+              "title": "Your First Vue Component",
+              "description": "Build the Pinboard UI in three stages — fetch and display pins, add loading and empty states, then wire up a form to create new ones. @nextcloud/axios for CSRF-safe calls back to your own Python API. Same @nextcloud/vue components as the PHP track.",
+              "estimated_minutes": 90,
+              "git_tag_start": "exapp/beginner/m5-complete",
+              "git_tag_end": "exapp/beginner/m6-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/basics/front-end/index.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/design/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-03",
+                  "preview": "Component architecture and Pinia state management replace the monolithic App.vue at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-11",
+                  "preview": "Optimistic updates with proper rollback and lazy-loading are covered at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-04",
+                  "preview": "Real-time UI patterns (SSE from a Python service) build on this component at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-06",
+                "note": "Identical @nextcloud/vue components — frontend skills transfer completely between tracks"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-07",
+              "index": 7,
+              "title": "Users and Identity",
+              "description": "Verifying the current user via AppAPI — what identity claims arrive in the request, what you can trust, and what you must verify. Scoping all pin queries to the current user. The difference between nc_py_api user context and a PHP IUserSession.",
+              "estimated_minutes": 40,
+              "git_tag_start": "exapp/beginner/m6-complete",
+              "git_tag_end": "exapp/beginner/m7-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-01",
+                  "preview": "The trust model for user identity claims gets its full security treatment at Intermediate"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "preview": "Sharing extends user identity to multiple recipients — built on the scoping model here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-03",
+                  "preview": "Remote user identity in federation — what you can trust across instance boundaries — is Advanced A-03"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-07",
+                "note": "PHP uses $userId injected by the DI container — ExApp verifies identity from signed request headers. Same scoping principle, different mechanism"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-b-08",
+              "index": 8,
+              "title": "Packaging and Deployment",
+              "description": "Building the Docker image, the ExApp store manifest, signing, and registering your app on the Nextcloud app store. The differences from PHP app packaging — Docker image vs signed zip, AppAPI registration vs plain app enable.",
+              "estimated_minutes": 50,
+              "git_tag_start": "exapp/beginner/m7-complete",
+              "git_tag_end": "exapp/beginner/m8-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/release_process.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-09",
+                  "preview": "Multi-arch image builds and automated registration testing are the Advanced extension"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-10",
+                  "preview": "Architecture patterns for complex ExApps — when to split services — is Advanced A-10"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-b-08",
+                "note": "PHP packaging produces a signed zip; ExApp packaging produces a Docker image — same store, very different artifacts"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            }
+          ]
+        },
+        "intermediate": {
+          "id": "intermediate",
+          "title": "Intermediate",
+          "tagline": "Make your ExApp production-ready and deeply integrated",
+          "persona": "Has a working ExApp, wants to add sharing, a richer UI, notifications, and real integration with Nextcloud",
+          "app_state": "Pinboard ExApp with boards, sharing, component architecture, notifications, public pages, REST API, async tasks, admin settings",
+          "estimated_hours": "18–22",
+          "modules": [
+            {
+              "id": "ex-i-01",
+              "index": 1,
+              "title": "Auth and Security",
+              "description": "The AppAPI auth handshake in depth — verifying request signatures, never trusting unverified callbacks, replay attack prevention. Auditing the beginner pin and board endpoints against OWASP Top 10. User identity trust boundaries.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/beginner/m8-complete",
+              "git_tag_end": "exapp/intermediate/m1-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/exapp_development/tech_details/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-02",
+                  "note": "Request lifecycle from Beginner M2 — now treated with full security rigour"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-07",
+                  "note": "User identity claims from Beginner M7 — now the full trust model"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-06",
+                  "preview": "Container image supply chain and secrets management extend this at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-08",
+                "note": "PHP security covers CSRF and injection — ExApp auth is a different attack surface but shares the same trust-nothing principle"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-02",
+              "index": 2,
+              "title": "Boards",
+              "description": "Introduce boards as an organisational layer — a new sidecar DB entity, nullable board_id on pins, and the uncategorised pseudo-board pattern. Add and remove pins from boards, list pins by board. The ExApp equivalent of the PHP Boards module — same concept, your sidecar DB means no Nextcloud migration required.",
+              "estimated_minutes": 50,
+              "git_tag_start": "exapp/intermediate/m1-complete",
+              "git_tag_end": "exapp/intermediate/m2-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-04",
+                  "note": "The sidecar DB and CRUD patterns from Beginner M4 are extended with the board entity here"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-03",
+                  "note": "The endpoint patterns from Beginner M3 are extended with board-specific routes here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "preview": "Boards are what you share in I-04 — this module makes them worth sharing"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-03",
+                  "preview": "Federation extends board sharing across instances at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-02",
+                "note": "PHP uses a migration on Nextcloud's database — ExApp controls its own sidecar DB. Same organisational concept, different implementation"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-03",
+              "index": 3,
+              "title": "Component Architecture and State Management",
+              "description": "Split the monolithic App.vue into a proper component tree — BoardList, PinList, PinCard. Introduce Pinia for shared state. Understand when to split a component and how to design the store around boards and pins.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/intermediate/m2-complete",
+              "git_tag_end": "exapp/intermediate/m3-complete",
+              "official_docs": [
+                "https://pinia.vuejs.org/"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-06",
+                  "note": "The monolithic App.vue from Beginner M6 is what gets split and refactored here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "intermediate",
+                  "module_id": "ex-i-05",
+                  "preview": "The component structure built here is extended with navigation and picker components in I-05"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-04",
+                  "preview": "Real-time updates require reactive state — the Pinia store built here is what SSE updates"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-03",
+                "note": "Identical module — Pinia and Vue component patterns are the same regardless of whether the backend is PHP or Python"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-04",
+              "index": 4,
+              "title": "Sharing and ACLs",
+              "description": "Hooking into Nextcloud's share manager from an ExApp via OCS. Sharing boards and individual pins with users, groups, via link, password-protected, and email invite. The permission bitmask — read, create, update, delete, share — checked and enforced in your Python service. Public board pages via nc_py_api.",
+              "estimated_minutes": 90,
+              "git_tag_start": "exapp/intermediate/m3-complete",
+              "git_tag_end": "exapp/intermediate/m4-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/index.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/sharing.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-07",
+                  "note": "User scoping from Beginner M7 is the foundation — sharing extends ownership to multiple users"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-03",
+                  "preview": "Federation extends the sharing model across instances"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-06",
+                  "preview": "Security hardening audits the ACL checks written here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-04",
+                "note": "PHP calls IShareManager directly in-process — ExApp calls the same share manager via OCS. Identical user-facing behaviour, different code path"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-05",
+              "index": 5,
+              "title": "Advanced @nextcloud/vue — Navigation, Pickers, and Actions",
+              "description": "NcAppNavigation for the board sidebar, NcSelect for user and group pickers in the share dialog, NcActionButton for per-pin actions, NcDialog for confirmations. Keyboard navigation, focus management, and accessibility in practice.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/intermediate/m4-complete",
+              "git_tag_end": "exapp/intermediate/m5-complete",
+              "official_docs": [
+                "https://nextcloud-vue-components.netlify.app/"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "The share dialog built here is driven by the sharing model from I-04"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-03",
+                  "note": "The component structure from I-03 is extended with the board sidebar here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-04",
+                  "preview": "Dashboard widgets at Advanced use the same NcAppNavigation patterns extended here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-05",
+                "note": "Identical module — @nextcloud/vue components are the same regardless of backend"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-06",
+              "index": 6,
+              "title": "Notifications and Activity",
+              "description": "Sending notifications to Nextcloud users from your Python service via nc_py_api — alice shared a board with you, bob added a pin to Research. IActivityManager integration. Email notifications for share invites via the Nextcloud mailer OCS endpoint.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/intermediate/m5-complete",
+              "git_tag_end": "exapp/intermediate/m6-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/notifications.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/email.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "Share events from I-04 are the triggers for the notifications built here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-04",
+                  "preview": "Real-time notification delivery extends these at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-06",
+                "note": "PHP calls INotificationManager directly — ExApp sends notifications via nc_py_api OCS wrapper. Same notification model, same user experience"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-07",
+              "index": 7,
+              "title": "REST API Design",
+              "description": "Exposing your own versioned API endpoints from the ExApp for boards and pins. OCS response format, API versioning, authentication for external callers. Registering endpoints with AppAPI so Nextcloud proxies them correctly. Note: unlike PHP apps, ExApps do not use the IInitialState mechanism — initial data is fetched via a standard API call on component mount, consistent with the ExApp stateless service model.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/intermediate/m6-complete",
+              "git_tag_end": "exapp/intermediate/m7-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/rest_apis.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-02",
+                  "note": "Request lifecycle from Beginner M2 — now exposing your own versioned endpoints"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-03",
+                  "preview": "Federation uses this API as transport — Advanced A-03 builds directly on it"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-07",
+                "note": "Same OCS contract — PHP implements it via controllers, ExApp implements it via FastAPI/Flask routes registered with AppAPI"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-08",
+              "index": 8,
+              "title": "Files Integration",
+              "description": "Reading and writing user files via WebDAV and nc_py_api. File attachments on pins — storing files in the user's Nextcloud rather than in the sidecar DB. Understanding file IDs across mounts and handling permissions correctly.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/intermediate/m7-complete",
+              "git_tag_end": "exapp/intermediate/m8-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/client_apis/WebDAV/index.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/client_apis/files.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "preview": "Chunked upload/download and streaming large files without buffering is Advanced A-05"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-05",
+                "note": "PHP accesses files via the storage abstraction stack — ExApp uses WebDAV. Understanding the PHP internals explains WebDAV behaviour that can otherwise seem mysterious"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-09",
+              "index": 9,
+              "title": "Background and Async Tasks",
+              "description": "Async processing within your Python service using asyncio or task queues. Webhooks from Nextcloud triggering async work. Progress reporting back to the UI. Exercise: async URL preview fetching triggered on pin creation.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/intermediate/m8-complete",
+              "git_tag_end": "exapp/intermediate/m9-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-02",
+                  "preview": "AI task processing is the ExApp killer feature for async work — Advanced A-02"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-04",
+                  "preview": "Real-time progress reporting from long-running tasks is an Advanced pattern"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-09",
+                "note": "PHP uses Nextcloud's cron-based job queue — ExApp owns its own async runtime. Very different operationally, same outcome"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-10",
+              "index": 10,
+              "title": "Search",
+              "description": "Registering a search provider from an ExApp via nc_py_api. Indexing boards and pins in unified search, scoping results to boards the requesting user can access. Handling search from an external service — latency considerations.",
+              "estimated_minutes": 50,
+              "git_tag_start": "exapp/intermediate/m9-complete",
+              "git_tag_end": "exapp/intermediate/m10-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/search.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "Search results must respect the share ACLs from I-04"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "preview": "Search performance at scale and caching search results is an Advanced concern"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-10",
+                "note": "Same ISearchProvider concept — PHP registers it in-process, ExApp registers it via nc_py_api callback"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-11",
+              "index": 11,
+              "title": "Settings and Admin Panel",
+              "description": "Serving admin and personal settings panels from your ExApp, reading and writing instance configuration via nc_py_api. Exercise: admin toggle to disable public board sharing instance-wide.",
+              "estimated_minutes": 40,
+              "git_tag_start": "exapp/intermediate/m10-complete",
+              "git_tag_end": "exapp/intermediate/m11-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/settings.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "The public sharing toggle gates the public board share feature from I-04"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "preview": "Instance-wide config interacts with horizontal scaling — Advanced A-05"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-11",
+                "note": "PHP settings use ISettings directly — ExApp serves the panel HTML from the external service but registers identically"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-12",
+              "index": 12,
+              "title": "Frontend Performance and UX",
+              "description": "Lazy-loading Vue components with defineAsyncComponent. Optimistic updates with rollback when the Python service rejects a change. Pagination and infinite scroll for large pin lists. Debouncing search input. Skeleton loading states.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/intermediate/m11-complete",
+              "git_tag_end": "exapp/intermediate/m12-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-06",
+                  "note": "The Vue component from Beginner M6 gets the optimistic update pattern properly implemented here"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-03",
+                  "note": "The Pinia store from I-03 is what optimistic updates and rollbacks modify"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-04",
+                  "preview": "Real-time UI patterns extend the reactive update model built here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-12",
+                "note": "Identical module — Vue performance patterns are the same regardless of backend"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-13",
+              "index": 13,
+              "title": "Backend Performance",
+              "description": "Connection pooling to Nextcloud OCS APIs, caching strategies for share ACL lookups and board membership, avoiding redundant API calls with local sidecar DB as cache. Profiling the Python service. N+1 detection on board+pin queries.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/intermediate/m12-complete",
+              "git_tag_end": "exapp/intermediate/m13-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/performance.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-04",
+                  "note": "The sidecar DB queries from Beginner M4 are the subject of the N+1 audit here"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "preview": "Horizontal scaling changes all caching assumptions — Advanced A-05"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-13",
+                "note": "PHP performance is dominated by DB query patterns — ExApp performance is dominated by OCS API call overhead and connection pooling"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-i-14",
+              "index": 14,
+              "title": "Testing",
+              "description": "Testing ExApp business logic independently of Nextcloud — unit tests for board and pin logic, mock nc_py_api. Integration testing against a live Nextcloud instance. Testing share ACL enforcement. Frontend testing with Jest.",
+              "estimated_minutes": 70,
+              "git_tag_start": "exapp/intermediate/m13-complete",
+              "git_tag_end": "exapp/intermediate/m14-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-02",
+                  "note": "The request lifecycle from Beginner M2 is what integration tests exercise"
+                },
+                {
+                  "direction": "forward",
+                  "level": "advanced",
+                  "module_id": "ex-a-09",
+                  "preview": "CI pipeline wires these tests into automated multi-version matrix testing at Advanced"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-i-14",
+                "note": "PHP testing mocks Nextcloud services in-process — ExApp can test its service layer completely without Nextcloud, which is a significant advantage"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            }
+          ]
+        },
+        "advanced": {
+          "id": "advanced",
+          "title": "Advanced",
+          "tagline": "Master AppAPI internals, AI integration, federation, and production scale",
+          "persona": "Has shipped an ExApp, wants deeper AppAPI knowledge, real-time features, AI provider integration, or large-scale deployment confidence",
+          "app_state": "Pinboard ExApp with federation, real-time board updates, AI-powered pin tagging, file attachments, production-hardened security and performance",
+          "estimated_hours": "16–22",
+          "modules": [
+            {
+              "id": "ex-a-01",
+              "index": 1,
+              "title": "AppAPI Internals",
+              "description": "How the daemon model works under the hood — the full signing protocol, request routing, failure modes, and recovery. How registration flows from occ through the daemon to your service. Lazy ExApp loading and capability negotiation.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/intermediate/m14-complete",
+              "git_tag_end": "exapp/advanced/m1-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/exapp_development/tech_details/index.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-01",
+                  "note": "Registration from Beginner M1 — now you understand the full protocol behind it"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-02",
+                  "note": "Auth handshake from Beginner M2 gets its full protocol-level explanation here"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-01",
+                  "note": "Security treatment from I-01 — now you understand what you were protecting against at the protocol level"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-01",
+                "note": "PHP internals covers the server bootstrap — AppAPI internals is the ExApp equivalent view of the same boundary"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-02",
+              "index": 2,
+              "title": "AI and Task Processing",
+              "description": "Implementing TaskProcessingProvider, SpeechToText, TextToImage, and ContextChat from an ExApp. AI-powered pin tagging — automatically categorise new pins into boards using a language model. The async task processing lifecycle.",
+              "estimated_minutes": 90,
+              "git_tag_start": "exapp/advanced/m1-complete",
+              "git_tag_end": "exapp/advanced/m2-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/task_processing.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/speech-to-text.html",
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/text2image.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-09",
+                  "note": "Async task patterns from I-09 are the foundation AI providers run on"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-i-02",
+                  "note": "Boards from Intermediate M2 are what AI auto-tagging assigns new pins to"
+                }
+              ],
+              "cross_track_ref": null,
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-03",
+              "index": 3,
+              "title": "Federation",
+              "description": "OCM from a Python ExApp — implementing the federation protocol to share Pinboard boards across Nextcloud instances. Cross-instance data exchange via nc_py_api, remote user identity trust boundaries, incoming share handling.",
+              "estimated_minutes": 90,
+              "git_tag_start": "exapp/advanced/m2-complete",
+              "git_tag_end": "exapp/advanced/m3-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "The sharing model from I-04 extends across instance boundaries here"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-07",
+                  "note": "The REST API from I-07 is the transport layer for OCM notifications"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-06",
+                  "note": "Cross-instance notifications — alice on one server notified when bob on another adds a pin"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-03",
+                "note": "PHP federation counterpart — both implement OCM; the capstone connects them"
+              },
+              "federation_capstone": true,
+              "downloads": [
+                {
+                  "ref": "pinboard-php-federation",
+                  "label": "Download Pinboard PHP — Federation Starting Point",
+                  "description": "The PHP Pinboard counterpart to federate against if you haven't done the PHP track"
+                },
+                {
+                  "ref": "federation-lab-compose",
+                  "label": "Download Federation Lab Docker Compose",
+                  "description": "Two pre-wired Nextcloud instances ready for the federation exercise"
+                }
+              ]
+            },
+            {
+              "id": "ex-a-04",
+              "index": 4,
+              "title": "Real-Time and Collaborative Features",
+              "description": "Server-Sent Events from a Python service to push live board updates — new pins appear without refresh. Dashboard widget showing recent board activity. Progress reporting for AI task processing. The interaction between SSE, the Pinia store, and optimistic updates.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/advanced/m3-complete",
+              "git_tag_end": "exapp/advanced/m4-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/dashboard.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-03",
+                  "note": "The Pinia store from I-03 is what SSE events update"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-06",
+                  "note": "Notifications from I-06 extended into real-time delivery"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-12",
+                  "note": "Optimistic update patterns from I-12 interact with SSE — both update the same store"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-04",
+                "note": "Same SSE patterns — PHP serves them from Nextcloud itself, ExApp serves them from the Python service"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-05",
+              "index": 5,
+              "title": "Multi-Instance Deployment and Scaling",
+              "description": "Running the ExApp as a horizontally scaled service — stateless design, load balancer considerations, sidecar DB becomes distributed. Redis for shared cache and session state across instances. Object storage for file attachments. When the sidecar DB model breaks down.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/advanced/m4-complete",
+              "git_tag_end": "exapp/advanced/m5-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-04",
+                  "note": "Sidecar DB from Beginner M5 — now you need to make it distributed or replace it"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-13",
+                  "note": "Performance caching from I-13 breaks under horizontal scaling if not designed carefully"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-11",
+                  "note": "Instance-wide config interacts with scaling — which instance handles which request?"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-07",
+                "note": "PHP scalability concerns are about the Nextcloud server itself — ExApp scalability is about your own service. Different problems, complementary concerns"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-06",
+              "index": 6,
+              "title": "Security Hardening",
+              "description": "Container image supply chain — base image selection, dependency scanning, SBOM generation. Secrets management — never bake credentials into images. CSP implications of an external service serving assets. Rate limiting on share creation and public board endpoints. Runtime security and least-privilege containerisation.",
+              "estimated_minutes": 75,
+              "git_tag_start": "exapp/advanced/m5-complete",
+              "git_tag_end": "exapp/advanced/m6-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/security.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-01",
+                  "note": "Auth hardening from I-01 is the application-level baseline — this module covers the infrastructure layer"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "Share creation and public board endpoints are the rate limiting targets here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-08",
+                "note": "PHP security hardening covers CSP and audit logging — ExApp adds container and secrets concerns on top"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-07",
+              "index": 7,
+              "title": "Caching and Distributed State",
+              "description": "Caching OCS API responses to avoid redundant Nextcloud calls — share ACL lookups, user group membership, board metadata. Redis as a shared cache across scaled instances. Cache invalidation via Nextcloud webhook events. When to cache and when to always re-fetch.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/advanced/m6-complete",
+              "git_tag_end": "exapp/advanced/m7-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-13",
+                  "note": "N+1 fixes and caching from I-13 — now applied at scale with distributed Redis"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-04",
+                  "note": "Share ACL lookups are the most cache-worthy — invalidation must be correct when shares change"
+                },
+                {
+                  "direction": "back",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "note": "Horizontal scaling from A-05 makes distributed caching a correctness concern, not just a performance one"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-06",
+                "note": "PHP caches inside Nextcloud's ICacheFactory — ExApp caches OCS API responses in its own Redis. Different implementation, same invalidation challenges"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-08",
+              "index": 8,
+              "title": "Event-Driven Architecture",
+              "description": "Receiving Nextcloud events via webhook callbacks — file events, user events, share events. Designing the ExApp as an event-driven service: decoupling board notifications, search indexing, and AI tagging into independent event handlers. Webhook reliability, retries, and idempotency.",
+              "estimated_minutes": 60,
+              "git_tag_start": "exapp/advanced/m7-complete",
+              "git_tag_end": "exapp/advanced/m8-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-06",
+                  "note": "Notifications from I-06 become event-driven here rather than directly wired to API handlers"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-09",
+                  "note": "Background tasks from I-09 become event subscribers"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-10",
+                  "note": "Search indexing from I-10 reacts to board and pin events rather than being called directly"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-02",
+                "note": "PHP uses IEventDispatcher in-process — ExApp receives events via HTTP webhook callbacks. Same decoupling goal, very different architecture"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-09",
+              "index": 9,
+              "title": "CI/CD for ExApps",
+              "description": "Docker image builds for multiple architectures (amd64, arm64). Automated AppAPI registration testing against a real Nextcloud instance in CI. App store release automation. Container image signing and attestation. SBOM generation in the pipeline.",
+              "estimated_minutes": 70,
+              "git_tag_start": "exapp/advanced/m8-complete",
+              "git_tag_end": "exapp/advanced/m9-complete",
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/app_publishing_maintenance/release_automation.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-14",
+                  "note": "Tests from I-14 get wired into the CI matrix here"
+                },
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-08",
+                  "note": "Manual Docker packaging from Beginner M8 becomes a fully automated multi-arch pipeline here"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-10",
+                "note": "PHP CI produces signed zips — ExApp CI produces multi-arch Docker images. Worth comparing pipelines side by side"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-10",
+              "index": 10,
+              "title": "Contributing Upstream",
+              "description": "Contributing to AppAPI itself — new provider interfaces, capability additions, nc_py_api improvements, and the AppAPI release process. Navigating the AppAPI codebase, writing good issues, and the PR review process.",
+              "estimated_minutes": 60,
+              "git_tag_start": null,
+              "git_tag_end": null,
+              "official_docs": [
+                "https://docs.nextcloud.com/server/latest/developer_manual/prologue/help_communication.html"
+              ],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "advanced",
+                  "module_id": "ex-a-01",
+                  "note": "AppAPI internals from A-01 is the prerequisite for knowing where to contribute"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-07",
+                  "note": "The REST API patterns from I-07 inform what good API design looks like when proposing new AppAPI endpoints"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-09",
+                "note": "PHP upstream contribution targets nextcloud/server — ExApp contribution targets nextcloud/app_api and nextcloud/nc_py_api"
+              },
+              "federation_capstone": false,
+              "downloads": []
+            },
+            {
+              "id": "ex-a-11",
+              "index": 11,
+              "title": "Architecture Patterns for Complex ExApps",
+              "description": "When to split an ExApp into multiple services. The sidecar service pattern for heavy computation (AI inference, image processing). Migrating from SQLite to Postgres in a sidecar DB with live users. The decision framework for when an ExApp should become a PHP app or vice versa. Closes with a self-directed extensions section.",
+              "estimated_minutes": 90,
+              "git_tag_start": "exapp/advanced/m9-complete",
+              "git_tag_end": "exapp/advanced/m11-complete",
+              "official_docs": [],
+              "reuses_existing": [],
+              "spiral_refs": [
+                {
+                  "direction": "back",
+                  "level": "beginner",
+                  "module_id": "ex-b-08",
+                  "note": "Packaging from Beginner M8 — now applied to a breaking schema change with live users"
+                },
+                {
+                  "direction": "back",
+                  "level": "intermediate",
+                  "module_id": "ex-i-02",
+                  "note": "Data patterns from I-02 — now evaluated at production scale with migration constraints"
+                },
+                {
+                  "direction": "back",
+                  "level": "advanced",
+                  "module_id": "ex-a-05",
+                  "note": "Scaling decisions from A-05 inform when to split services"
+                }
+              ],
+              "cross_track_ref": {
+                "track": "php",
+                "module_id": "php-a-11",
+                "note": "PHP architecture patterns cover multi-app splits — ExApp patterns cover multi-service splits. The decision framework at the end of both modules explicitly compares the two approaches"
+              },
+              "federation_capstone": false,
+              "downloads": [],
+              "extensions": [
+                {
+                  "id": "ext-ex-pinned-contacts",
+                  "title": "Pinned Contacts via CardDAV",
+                  "description": "Fetch contact cards from Nextcloud's CardDAV via nc_py_api and attach them to pins.",
+                  "bonus_module_candidate": true
+                },
+                {
+                  "id": "ext-ex-talk-integration",
+                  "title": "Talk Integration",
+                  "description": "Post pin activity to Talk rooms via the Talk bot API from the Python service.",
+                  "bonus_module_candidate": true
+                },
+                {
+                  "id": "ext-ex-collaborative-notes",
+                  "title": "Collaborative Board Notes",
+                  "description": "Attach a collaboratively editable note to each board via the Text app API.",
+                  "bonus_module_candidate": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "standalone": {
+    "description": "Self-contained single-topic modules. Each can be taken independently of any track. Tagged beginner, intermediate, or advanced to indicate assumed knowledge level.",
+    "categories": {
+      "development_tooling": {
+        "title": "Development Tooling",
+        "modules": [
+          {
+            "id": "standalone-env-setup",
+            "title": "Setting Up Your Development Environment",
+            "level": "beginner",
+            "description": "Step-by-step installation guide for the Nextcloud development environment — Docker Desktop, nextcloud-docker-dev bootstrap, nvm, and Node.js — for macOS, Ubuntu, Windows, and GitHub Codespaces. Intended for developers who have not set up a Nextcloud dev environment before.",
+            "estimated_minutes": 40
+          },
+          {
+            "id": "standalone-dev-environment",
+            "title": "Dev Environment Deep Dive",
+            "level": "beginner",
+            "description": "Xdebug setup and step debugging, profiling, advanced log analysis, and Docker-dev tips that don't fit in the track M1.",
+            "estimated_minutes": 60
+          },
+          {
+            "id": "standalone-git-workflow",
+            "title": "Git Workflow for Nextcloud",
+            "level": "beginner",
+            "description": "Backports, stable branches, PR conventions, commit message format, and how the Nextcloud release cycle affects your contributions.",
+            "estimated_minutes": 45
+          }
+        ]
+      },
+      "app_quality": {
+        "title": "App Quality",
+        "modules": [
+          {
+            "id": "standalone-l10n",
+            "title": "l10n and i18n",
+            "level": "beginner",
+            "description": "Translation workflow, Transifex, plural forms, `t()` vs `n()`, and how to structure strings for translators.",
+            "estimated_minutes": 45
+          },
+          {
+            "id": "standalone-reuse",
+            "title": "REUSE and Licensing Compliance",
+            "level": "beginner",
+            "description": "SPDX headers, the REUSE spec, reuse tooling for automated compliance checks, and what licence choices are compatible with Nextcloud apps.",
+            "estimated_minutes": 30
+          },
+          {
+            "id": "standalone-testing",
+            "title": "Writing Good Tests",
+            "level": "intermediate",
+            "description": "Testing patterns specific to Nextcloud beyond the basics — integration test fixtures, database rollbacks, testing background jobs, and end-to-end Cypress setup.",
+            "estimated_minutes": 75
+          },
+          {
+            "id": "standalone-psalm",
+            "title": "Static Analysis with Psalm",
+            "level": "intermediate",
+            "description": "Psalm setup for Nextcloud apps, Nextcloud stubs, fixing common errors, baseline workflow, and integrating into CI.",
+            "estimated_minutes": 60
+          },
+          {
+            "id": "standalone-accessibility",
+            "title": "Accessibility in Nextcloud Apps",
+            "level": "intermediate",
+            "description": "WCAG requirements, keyboard navigation, screen reader testing, ARIA roles in Vue components, and using @nextcloud/vue correctly to get accessibility for free.",
+            "estimated_minutes": 60
+          },
+          {
+            "id": "standalone-taint",
+            "title": "Taint Analysis and Security Annotations",
+            "level": "advanced",
+            "description": "`@psalm-taint-source`, `@psalm-taint-sink`, `@psalm-taint-escape` — tracing user input through controllers to DB and output, and how Nextcloud's own annotations work.",
+            "estimated_minutes": 60
+          }
+        ]
+      },
+      "publishing_maintenance": {
+        "title": "Publishing & Maintenance",
+        "modules": [
+          {
+            "id": "standalone-app-store",
+            "title": "App Store Submission",
+            "level": "beginner",
+            "description": "Code signing, the app store review process, maintaining a listing, responding to issues, and planning releases around Nextcloud's release cycle.",
+            "estimated_minutes": 45
+          },
+          {
+            "id": "standalone-compatibility",
+            "title": "Maintaining Compatibility",
+            "level": "intermediate",
+            "description": "Supporting multiple Nextcloud versions simultaneously, deprecation handling, version-gated code, and building a multi-version CI test matrix.",
+            "estimated_minutes": 60
+          }
+        ]
+      },
+      "design_frontend": {
+        "title": "Design & Frontend",
+        "modules": [
+          {
+            "id": "standalone-design-system",
+            "title": "Nextcloud Design System",
+            "level": "beginner",
+            "description": "The Nextcloud HIG, CSS variables, when to use which @nextcloud/vue component, icon conventions, and design review process for app store submissions.",
+            "estimated_minutes": 45
+          },
+          {
+            "id": "standalone-theming",
+            "title": "Theming Your App",
+            "level": "intermediate",
+            "description": "Custom themes, dark mode testing, RTL support, and ensuring your app looks correct across all Nextcloud theme variants.",
+            "estimated_minutes": 45
+          }
+        ]
+      },
+      "deeper_topics": {
+        "title": "Deeper Topics",
+        "modules": [
+          {
+            "id": "standalone-federation-concepts",
+            "title": "Understanding Federation",
+            "level": "beginner",
+            "description": "Conceptual introduction to federation — what it means, how OCM works, what users experience, and what it means for app developers. No code.",
+            "estimated_minutes": 30
+          },
+          {
+            "id": "standalone-php-vs-exapp",
+            "title": "AppAPI vs PHP Apps — When to Choose What",
+            "level": "beginner",
+            "description": "Decision guide covering the tradeoffs between the two approaches — language, deployment, performance, maintenance, and App Store implications.",
+            "estimated_minutes": 30
+          },
+          {
+            "id": "standalone-gdpr",
+            "title": "GDPR Compliance for App Developers",
+            "level": "intermediate",
+            "description": "`IAccountManager`, data export hooks, account deletion cleanup, retention policies, and what your app must implement to be compliant with GDPR requirements.",
+            "estimated_minutes": 60
+          },
+          {
+            "id": "standalone-contributing-libraries",
+            "title": "Contributing to Nextcloud Libraries",
+            "level": "advanced",
+            "description": "Local dev setup for Nextcloud libraries, Storybook for @nextcloud/vue, component API design conventions, and the PR process across nextcloud-vue, @nextcloud/axios, @nextcloud/router, and @nextcloud/dialogs.",
+            "estimated_minutes": 60
+          },
+          {
+            "id": "standalone-smart-picker",
+            "title": "Smart Picker Provider",
+            "level": "intermediate",
+            "description": "Register your app as a Smart Picker provider — implement ISearchProvider and a reference provider so pins and boards can be searched, inserted as rich links, and rendered inline across Nextcloud apps including Text, Talk, Deck, and Notes. Covers the provider lifecycle, custom result rendering, and admin settings for API credentials.",
+            "estimated_minutes": 60,
+            "official_docs": [
+              "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/search.html",
+              "https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/reference_providers.html"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
