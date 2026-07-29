@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import TopBar from './TopBar'
 import type { Track, Level } from '@/lib/types'
-import { getProgress } from '@/lib/progress'
+import { getProgress, moduleKey } from '@/lib/progress'
+import type { ModuleProgress } from '@/lib/types'
 
 export default function LevelCatalogClient({
   track, level, trackId, levelId,
@@ -14,10 +15,10 @@ export default function LevelCatalogClient({
   trackId: string
   levelId: string
 }) {
-  const [progressStore, setProgressStore] = useState<Record<string, { completed: boolean; completedSections: number[] }>>({})
+  const [progressStore, setProgressStore] = useState<Record<string, ModuleProgress>>({})
 
   useEffect(() => {
-    setProgressStore(getProgress())
+    setProgressStore(getProgress().modules)
   }, [])
 
   const sorted = [...level.modules].sort((a, b) => a.index - b.index)
@@ -41,10 +42,13 @@ export default function LevelCatalogClient({
 
         <div className="grid gap-3">
           {sorted.map((mod) => {
-            const key = `${trackId}/${levelId}/${mod.index}`
-            const prog = progressStore[key]
+            // Prefer the id-based key; fall back to the v1 position-based one
+            // for readers whose progress has not been migrated yet.
+            const prog = progressStore[moduleKey(trackId, levelId, mod.id)]
+              ?? progressStore[`${trackId}/${levelId}/${mod.index}`]
             const isComplete = prog?.completed ?? false
-            const isStarted = (prog?.completedSections?.length ?? 0) > 0 && !isComplete
+            const startedSections = (prog?.completedSections?.length ?? 0) + (prog?.legacySections?.length ?? 0)
+            const isStarted = startedSections > 0 && !isComplete
 
             return (
               <Link

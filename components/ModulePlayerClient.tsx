@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 import type { Section, Module } from '@/lib/types'
 import TopBar from './TopBar'
-import { markSectionVisited, markModuleComplete, getModuleProgress } from '@/lib/progress'
+import { recordSectionChange, markModuleComplete, getModuleProgress, migrateLegacySections } from '@/lib/progress'
 
 interface Props {
   trackId: string
@@ -25,29 +27,63 @@ export default function ModulePlayerClient({
   trackId, levelId, moduleIndex, trackTitle, levelTitle,
   moduleTitle, moduleData, sections, prevModule, nextModule,
 }: Props) {
+  const router = useRouter()
+  const moduleId = moduleData.id
   const [currentSection, setCurrentSection] = useState(0)
-  const [visitedSections, setVisitedSections] = useState<Set<number>>(new Set())
+  const [visitedSections, setVisitedSections] = useState<Set<string>>(new Set())
   const [isComplete, setIsComplete] = useState(false)
 
   useEffect(() => {
-    const prog = getModuleProgress(trackId, levelId, moduleIndex)
+    // Translate any v1 position-based progress into stable section ids first;
+    // this component is the only place that knows the module's sections.
+    migrateLegacySections(trackId, levelId, moduleId, moduleIndex, sections)
+
+    const prog = getModuleProgress(trackId, levelId, moduleId, moduleIndex)
     setVisitedSections(new Set(prog.completedSections))
     setIsComplete(prog.completed)
-    const start = Math.min(prog.lastSection, sections.length - 1)
-    setCurrentSection(start)
-  }, [trackId, levelId, moduleIndex, sections.length])
+
+    // Resume where the reader left off. An unknown id means the section was
+    // renamed or removed since their last visit, so start from the beginning
+    // rather than guessing at a position.
+    const resumeAt = prog.lastSection
+      ? sections.findIndex(s => s.id === prog.lastSection)
+      : -1
+    setCurrentSection(resumeAt >= 0 ? resumeAt : 0)
+  }, [trackId, levelId, moduleId, moduleIndex, sections])
 
   const goToSection = useCallback((index: number) => {
-    markSectionVisited(trackId, levelId, moduleIndex, currentSection)
-    setVisitedSections(prev => new Set([...prev, currentSection]))
+    const leaving = sections[currentSection]
+    const entering = sections[index]
+    if (leaving && entering) {
+      // The section being left counts as read; the one being entered becomes
+      // the resume point.
+      recordSectionChange(trackId, levelId, moduleId, leaving.id, entering.id, moduleIndex)
+      setVisitedSections(prev => new Set([...prev, leaving.id]))
+    }
     setCurrentSection(index)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [trackId, levelId, moduleIndex, currentSection])
+  }, [trackId, levelId, moduleId, moduleIndex, currentSection, sections])
+
+  // Where "onward" goes once the module is finished: the next module, or back
+  // to the module list if this was the last one. Shared by completion and by
+  // the top and bottom controls, so they can never disagree.
+  const onwardHref = nextModule
+    ? `/${trackId}/${levelId}/${nextModule.index}`
+    : `/${trackId}/${levelId}`
 
   const handleComplete = () => {
-    markModuleComplete(trackId, levelId, moduleIndex, sections.length)
+    const allIds = sections.map(s => s.id)
+    markModuleComplete(trackId, levelId, moduleId, allIds, moduleIndex)
     setIsComplete(true)
-    setVisitedSections(new Set(sections.map((_, i) => i)))
+    setVisitedSections(new Set(allIds))
+
+    // Go straight on rather than rendering a success panel that costs a second
+    // click and shifts the button out from under the cursor. Within a track,
+    // momentum beats a static acknowledgement. The panel still shows when a
+    // reader revisits a finished module.
+    // Standalone modules (no next module) land on the module list instead;
+    // that's where a proper completion screen belongs later — academy #22.
+    router.push(onwardHref)
   }
 
   const isLastSection = currentSection === sections.length - 1
@@ -78,11 +114,11 @@ export default function ModulePlayerClient({
           <nav className="p-2">
             <div className="text-xs uppercase tracking-wider text-gray-500 px-2 py-2">Sections</div>
             {sections.map((sec, i) => {
-              const visited = visitedSections.has(i)
+              const visited = visitedSections.has(sec.id)
               const active = i === currentSection
               return (
                 <button
-                  key={i}
+                  key={sec.id}
                   onClick={() => goToSection(i)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-start gap-2 transition-colors mb-0.5 ${
                     active
@@ -114,8 +150,56 @@ export default function ModulePlayerClient({
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-3xl mx-auto px-6 py-8">
             <div className="mb-6">
-              <div className="text-xs text-gray-500 mb-1">
-                Section {currentSection + 1} of {sections.length}
+              {/*
+                Section controls are duplicated up here so readers don't have to
+                scroll a long module to move on. Deliberately styled as quiet
+                chrome rather than a second pair of CTAs, so a short module
+                doesn't look like it has two competing button rows.
+              */}
+              <div className="flex items-center justify-between gap-4 mb-1">
+                <div className="text-xs text-gray-500">
+                  Section {currentSection + 1} of {sections.length}
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button
+                    onClick={() => goToSection(currentSection - 1)}
+                    disabled={currentSection === 0}
+                    aria-label="Previous section"
+                    className="flex items-center gap-1 px-2 py-1 text-xs text-gray-500 rounded hover:bg-gray-100 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent transition-colors"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Prev
+                  </button>
+                  {isLastSection ? (
+                    isComplete ? (
+                      <Link
+                        href={onwardHref}
+                        aria-label={nextModule ? 'Next module' : 'Back to all modules'}
+                        className="flex items-center gap-1 px-2 py-1 text-xs text-green-700 rounded hover:bg-green-50 transition-colors font-medium"
+                      >
+                        {nextModule ? 'Next module' : 'All modules'}
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    ) : (
+                      <span className="px-2 py-1 text-xs text-gray-400" aria-hidden="true">Last section</span>
+                    )
+                  ) : (
+                    <button
+                      onClick={() => goToSection(currentSection + 1)}
+                      aria-label="Next section"
+                      className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 rounded hover:bg-blue-50 transition-colors font-medium"
+                    >
+                      Next
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
               <h1 className="text-2xl font-bold text-gray-900">{section?.title}</h1>
               <div className="mt-3 h-1 bg-gray-200 rounded-full">
@@ -127,7 +211,14 @@ export default function ModulePlayerClient({
             </div>
 
             <div className="prose max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {/*
+                rehypeRaw renders inline HTML in the markdown, which the course
+                content needs for hand-written SVG diagrams (see php/beginner/3).
+                Safe here because content/ is first-party markdown from this
+                repo, never user input — audited: no <script> outside code
+                fences. Reconsider if content ever becomes reader-supplied.
+              */}
+              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                 {section?.content ?? ''}
               </ReactMarkdown>
             </div>
@@ -162,25 +253,58 @@ export default function ModulePlayerClient({
                 Previous
               </button>
 
-              {isLastSection ? (
-                <button
-                  onClick={handleComplete}
-                  disabled={isComplete}
-                  className="flex items-center gap-2 px-5 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors font-medium"
+              <div className="flex items-center gap-3">
+                {/*
+                  Explicit route back to the catalogue. The header title already
+                  links home, but a logo is a convention rather than a label —
+                  beta testers reported no obvious way back to the overview.
+                */}
+                <Link
+                  href="/"
+                  className="text-sm text-gray-500 hover:text-blue-600 hover:underline px-2 py-2 transition-colors"
                 >
-                  {isComplete ? 'Completed ✓' : 'Mark module complete'}
-                </button>
-              ) : (
-                <button
-                  onClick={() => goToSection(currentSection + 1)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                >
-                  Next
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              )}
+                  Course overview
+                </Link>
+
+                {isLastSection && isComplete ? (
+                  // Already completed: this used to be a disabled button, which
+                  // dead-ended anyone revisiting a finished module to look
+                  // something up. Move them onward instead.
+                  <Link
+                    href={onwardHref}
+                    className="flex items-center gap-2 px-5 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                  >
+                    {nextModule ? `Continue to module ${nextModule.index}` : 'Back to all modules'}
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                ) : isLastSection ? (
+                  // The label states the navigation, since completing now moves
+                  // the reader on immediately rather than showing a success panel.
+                  <button
+                    onClick={handleComplete}
+                    className="flex items-center gap-2 px-5 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                  >
+                    {nextModule
+                      ? `Complete and continue to module ${nextModule.index}`
+                      : 'Complete and back to all modules'}
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => goToSection(currentSection + 1)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Next
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="mt-6 flex gap-3">

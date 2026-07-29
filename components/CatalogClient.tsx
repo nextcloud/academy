@@ -21,7 +21,7 @@ export default function CatalogClient({ manifest }: { manifest: CourseManifest }
     for (const [trackId, track] of Object.entries(manifest.tracks)) {
       for (const [levelId, level] of Object.entries(track.levels)) {
         const key = `${trackId}/${levelId}`
-        p[key] = getLevelProgress(trackId, levelId, level.modules.length)
+        p[key] = getLevelProgress(trackId, levelId, level.modules.map(m => ({ id: m.id, index: m.index })))
       }
     }
     setProgress(p)

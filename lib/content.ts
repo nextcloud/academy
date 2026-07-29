@@ -10,47 +10,112 @@ export function getModuleContent(trackId: string, levelId: string, moduleIndex: 
   return fs.readFileSync(filePath, 'utf-8')
 }
 
+/**
+ * Marks which lines sit inside a fenced code block.
+ *
+ * Course content is full of shell comments (`# Run from: …`) and embedded
+ * examples containing real markdown headings — the CHANGELOG example in the
+ * packaging modules has `## [Unreleased]` in it. Without this, such lines are
+ * mistaken for section headings, which splits a code block down the middle and
+ * invents empty sections.
+ */
+function fencedLineFlags(lines: string[]): boolean[] {
+  let fenced = false
+  return lines.map(line => {
+    if (/^\s*(```|~~~)/.test(line)) {
+      fenced = !fenced
+      return true // the fence delimiter itself belongs to the block
+    }
+    return fenced
+  })
+}
+
 export function parseModuleHeader(markdown: string): { title: string; meta: string } {
   const lines = markdown.split('\n')
-  const titleLine = lines.find(l => l.startsWith('# '))
-  const title = titleLine ? titleLine.replace(/^# /, '') : 'Module'
+  const fenced = fencedLineFlags(lines)
 
-  const firstSectionIndex = lines.findIndex(l => l.startsWith('## '))
+  const titleIndex = lines.findIndex((l, i) => !fenced[i] && l.startsWith('# '))
+  const title = titleIndex >= 0 ? lines[titleIndex].replace(/^# /, '') : 'Module'
+
+  const firstSectionIndex = lines.findIndex((l, i) => !fenced[i] && l.startsWith('## '))
   const metaLines = firstSectionIndex > 0 ? lines.slice(0, firstSectionIndex) : []
-  const meta = metaLines.filter(l => !l.startsWith('# ')).join('\n').trim()
+  const meta = metaLines
+    .filter((l, i) => fenced[i] || !l.startsWith('# '))
+    .join('\n')
+    .trim()
 
   return { title, meta }
+}
+
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[`*_~]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+/**
+ * Splits a `## ` heading into its display title and its stable id.
+ *
+ * An explicit trailing `{#some-id}` wins, which lets content authors reword a
+ * heading without invalidating saved progress. Otherwise the id is slugified
+ * from the heading text.
+ */
+function parseHeading(headingText: string): { title: string; id: string } {
+  const explicit = headingText.match(/^(.*?)\s*\{#([A-Za-z0-9_-]+)\}\s*$/)
+  if (explicit) {
+    return { title: explicit[1].trim(), id: explicit[2] }
+  }
+  return { title: headingText, id: slugify(headingText) }
 }
 
 export function splitIntoSections(markdown: string): Section[] {
   const lines = markdown.split('\n')
   const sections: Section[] = []
-  let currentTitle = ''
+  const usedIds = new Map<string, number>()
+  let currentHeading = ''
   let currentLines: string[] = []
   let sectionIndex = 0
 
-  for (const line of lines) {
-    if (line.startsWith('## ')) {
-      if (currentTitle) {
-        sections.push({
-          title: currentTitle,
-          content: currentLines.join('\n').trim(),
-          index: sectionIndex++,
-        })
-        currentLines = []
-      }
-      currentTitle = line.replace(/^## /, '')
-    } else if (currentTitle) {
-      currentLines.push(line)
-    }
+  // Two headings can legitimately share text (e.g. "Common problems" in
+  // several modules, or a repeated "Exercise"). Ids must stay unique within a
+  // module, so disambiguate deterministically by order of first appearance:
+  // the first "concepts" stays `concepts`, the next becomes `concepts-2`.
+  const uniqueId = (id: string): string => {
+    const base = id || 'section'
+    const seen = usedIds.get(base) ?? 0
+    usedIds.set(base, seen + 1)
+    return seen === 0 ? base : `${base}-${seen + 1}`
   }
 
-  if (currentTitle) {
+  const push = (heading: string) => {
+    const { title, id } = parseHeading(heading)
     sections.push({
-      title: currentTitle,
+      title,
       content: currentLines.join('\n').trim(),
-      index: sectionIndex,
+      index: sectionIndex++,
+      id: uniqueId(id),
     })
+  }
+
+  const fenced = fencedLineFlags(lines)
+
+  lines.forEach((line, i) => {
+    // A `## ` inside a fenced block is example content, not a heading.
+    if (!fenced[i] && line.startsWith('## ')) {
+      if (currentHeading) {
+        push(currentHeading)
+        currentLines = []
+      }
+      currentHeading = line.replace(/^## /, '')
+    } else if (currentHeading) {
+      currentLines.push(line)
+    }
+  })
+
+  if (currentHeading) {
+    push(currentHeading)
   }
 
   return sections
