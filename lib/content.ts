@@ -184,11 +184,24 @@ export function splitIntoSections(markdown: string): Section[] {
     return seen === 0 ? base : `${base}-${seen + 1}`
   }
 
+  /*
+   * Section bodies in the source files end with a `---` separating them from the
+   * next heading. Once each section is rendered on its own that separator has
+   * nothing left to separate: it becomes a rule sitting directly above the
+   * player's own navigation border, so the module ends in two stacked lines.
+   *
+   * Stripping it here keeps the raw markdown readable as a document - the rules
+   * are useful when reading the file - without leaking into the rendered page.
+   * Only trailing rules go; a rule used mid-section is real content.
+   */
+  const stripTrailingRule = (body: string): string =>
+    body.replace(/(?:\n[ \t]*(?:-{3,}|\*{3,}|_{3,})[ \t]*)+$/, '').trimEnd()
+
   const push = (heading: string) => {
     const { title, id } = parseHeading(heading)
     sections.push({
       title,
-      content: currentLines.join('\n').trim(),
+      content: stripTrailingRule(currentLines.join('\n').trim()),
       index: sectionIndex++,
       id: uniqueId(id),
     })
