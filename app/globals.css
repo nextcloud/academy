@@ -1,10 +1,34 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --nc-blue: #0082c9;
-    --nc-blue-dark: #006aa3;
-  }
+/*
+ * Design tokens for the "Build apps for 30 million users" front-end.
+ *
+ * Declared in @theme rather than as plain custom properties so each one also
+ * generates the matching utilities (bg-navy, text-muted, border-rule). The
+ * catalog is then styled the same way as the rest of the app — utility classes
+ * in the components — instead of needing a parallel stylesheet.
+ */
+@theme {
+  --color-navy: #003356;
+  --color-navy-mid: #00477a;
+  --color-nc-blue: #0082c9;
+  --color-nc-blue-dark: #006aa3;
+  --color-nc-blue-light: #e8f4fd;
+  --color-nc-green: #46a35e;
+  /*
+   * White on --color-nc-green is only 3.15:1, which fails WCAG AA for anything
+   * short of large bold text. Use this for green that carries white text, and
+   * for green text on a light background.
+   */
+  --color-nc-green-dark: #2d7a45;
+  --color-nc-green-light: #e8f5e9;
+  --color-ink: #1a1f2e;
+  --color-muted: #5a6a7e;
+  --color-rule: #dde3ea;
+  --color-off-white: #f8fafb;
+
+  /* Mono is load-bearing in this design: eyebrows, stat numbers, card meta. */
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 /* Prose styles for markdown content */

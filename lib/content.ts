@@ -1,13 +1,39 @@
 import fs from 'fs'
 import path from 'path'
-import type { Section } from './types'
+import type { CourseManifest, Section } from './types'
 
 const CONTENT_DIR = path.join(process.cwd(), 'content')
 
+function moduleContentPath(trackId: string, levelId: string, moduleIndex: number): string {
+  return path.join(CONTENT_DIR, trackId, levelId, `${moduleIndex}.md`)
+}
+
 export function getModuleContent(trackId: string, levelId: string, moduleIndex: number): string | null {
-  const filePath = path.join(CONTENT_DIR, trackId, levelId, `${moduleIndex}.md`)
+  const filePath = moduleContentPath(trackId, levelId, moduleIndex)
   if (!fs.existsSync(filePath)) return null
   return fs.readFileSync(filePath, 'utf-8')
+}
+
+/**
+ * Which modules of each level actually have content written, keyed by
+ * `track/level` and listing manifest module indices.
+ *
+ * The manifest describes the whole planned syllabus, including levels nobody
+ * has written yet, so the catalog cannot tell "ready to read" from "planned"
+ * from the manifest alone. Answering that from the filesystem keeps the two in
+ * sync automatically: writing `content/php/intermediate/1.md` is all it takes
+ * for the catalog to stop calling that level unwritten.
+ */
+export function getWrittenModules(manifest: CourseManifest): Record<string, number[]> {
+  const written: Record<string, number[]> = {}
+  for (const [trackId, track] of Object.entries(manifest.tracks)) {
+    for (const [levelId, level] of Object.entries(track.levels)) {
+      written[`${trackId}/${levelId}`] = level.modules
+        .filter(m => fs.existsSync(moduleContentPath(trackId, levelId, m.index)))
+        .map(m => m.index)
+    }
+  }
+  return written
 }
 
 /**
