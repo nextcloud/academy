@@ -31,7 +31,7 @@ This installs the developer tools that Docker and the bootstrap script depend on
 In Terminal, run these commands one at a time:
 
 ```bash
-git clone https://github.com/juliushaertl/nextcloud-docker-dev.git
+git clone https://github.com/nextcloud/nextcloud-docker-dev.git
 cd nextcloud-docker-dev
 ./bootstrap.sh
 sudo sh -c "echo '127.0.0.1 nextcloud.local' >> /etc/hosts"
@@ -118,7 +118,7 @@ Once installed, open Docker Desktop and accept the terms of service. **Keep it o
 Open a terminal and run:
 
 ```bash
-git clone https://github.com/juliushaertl/nextcloud-docker-dev.git
+git clone https://github.com/nextcloud/nextcloud-docker-dev.git
 cd nextcloud-docker-dev
 ./bootstrap.sh
 sudo sh -c "echo '127.0.0.1 nextcloud.local' >> /etc/hosts"
@@ -316,7 +316,7 @@ Open **Ubuntu** and run:
 
 ```bash
 sudo apt install -y git
-git clone https://github.com/juliushaertl/nextcloud-docker-dev.git
+git clone https://github.com/nextcloud/nextcloud-docker-dev.git
 cd nextcloud-docker-dev
 ./bootstrap.sh
 ```
