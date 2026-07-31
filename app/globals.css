@@ -31,6 +31,23 @@
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
+/*
+ * Tailwind v4 dropped the preflight rule that gave buttons `cursor: pointer`,
+ * so every button in the app renders with the default arrow unless a component
+ * adds `cursor-pointer` itself. Restore it once here rather than per component:
+ * anything clickable should look clickable, and a missed class is a silent
+ * regression nobody notices in review.
+ *
+ * `:not(:disabled)` keeps a disabled control showing the default cursor, which
+ * is the correct affordance for something that cannot be clicked.
+ */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 /* Prose styles for markdown content */
 .prose code:not(pre code) {
   @apply bg-gray-100 text-pink-600 px-1.5 py-0.5 rounded text-sm font-mono;
