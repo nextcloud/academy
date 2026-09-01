@@ -2,6 +2,7 @@ import { getModule, getAdjacentModules, getLevel, getTrack } from '@/lib/manifes
 import { getModuleContent, splitIntoSections, parseModuleHeader } from '@/lib/content'
 import { notFound } from 'next/navigation'
 import ModulePlayerClient from '@/components/ModulePlayerClient'
+import { getAllModuleParams } from '@/lib/manifest'
 
 export default async function ModulePage({
   params,
@@ -38,4 +39,8 @@ export default async function ModulePage({
       nextModule={next}
     />
   )
+}
+
+export function generateStaticParams() {
+  return getAllModuleParams()
 }
