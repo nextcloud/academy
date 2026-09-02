@@ -63,6 +63,18 @@ export default async function StandaloneModulePage({
   )
 }
 
+/**
+ * Only standalone modules whose markdown exists become routes, so the fifteen
+ * declared-but-unwritten ones never 404.
+ *
+ * Known constraint, verified against Next 16.2: if this returns an empty array,
+ * `output: 'export'` rejects the build with *"Page /standalone/[module] is
+ * missing generateStaticParams()"* — an empty result is indistinguishable from
+ * an absent function. So this route requires at least one standalone module to
+ * have content. That is true today and the failure is loud rather than silent,
+ * but if the last standalone module were ever removed, this route file has to
+ * go with it. The error message will not tell you that.
+ */
 export function generateStaticParams() {
   return getAllStandaloneParams()
 }

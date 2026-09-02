@@ -38,13 +38,15 @@ export function getWrittenModules(manifest: CourseManifest): Record<string, numb
 
 /**
  * Resolves a standalone module's `file` to an absolute path, or null if it
- * would escape the content tree.
+ * points outside the content tree.
  *
- * `file` comes from the manifest and is relative to `content/`. Resolving and
- * then checking containment means a manifest entry cannot reach outside
- * CONTENT_DIR. Mirrors moduleContentPath() for track modules, and exists
- * separately from getStandaloneContent() so availability can be answered with
- * a stat instead of reading the whole file.
+ * `file` comes from the manifest and is relative to `content/`. The
+ * containment check catches a stray `../` in a manifest entry; it is not a
+ * sandbox, since a symlink committed inside `content/` could still resolve
+ * elsewhere. The manifest is source code in this repository, so a typo is the
+ * threat model here, not an attacker.
+ *
+ * Mirrors moduleContentPath() for track modules.
  */
 export function standaloneContentPath(file: string): string | null {
   const filePath = path.resolve(CONTENT_DIR, file)
@@ -52,11 +54,37 @@ export function standaloneContentPath(file: string): string | null {
   return filePath
 }
 
+/**
+ * The path to a standalone module's markdown, if it is a readable regular
+ * file. Null covers all three ways a manifest entry can fail to name one:
+ * escaping the content tree, not existing, or naming a directory.
+ *
+ * That last case is the reason this exists rather than a bare existsSync():
+ * `"file": "shared"` instead of `"shared/setup.md"` is an easy typo, and
+ * existsSync() says true for a directory. readFileSync() would then throw
+ * EISDIR and take the build down, and route generation would emit a route that
+ * 404s. Both should behave as "not written yet" instead.
+ *
+ * throwIfNoEntry: false makes a missing path return undefined rather than
+ * throw, so the common case needs no try/catch.
+ */
+function standaloneContentFile(file: string): string | null {
+  const filePath = standaloneContentPath(file)
+  if (!filePath) return null
+  const stat = fs.statSync(filePath, { throwIfNoEntry: false })
+  return stat?.isFile() ? filePath : null
+}
+
 /** Reads a standalone module's markdown. */
 export function getStandaloneContent(file: string): string | null {
-  const filePath = standaloneContentPath(file)
-  if (!filePath || !fs.existsSync(filePath)) return null
+  const filePath = standaloneContentFile(file)
+  if (!filePath) return null
   return fs.readFileSync(filePath, 'utf-8')
+}
+
+/** Whether a standalone module's `file` names readable markdown. */
+export function hasStandaloneContent(file: string): boolean {
+  return standaloneContentFile(file) !== null
 }
 
 /**
@@ -71,9 +99,7 @@ export function getWrittenStandaloneModules(manifest: CourseManifest): string[] 
   const ids: string[] = []
   for (const category of Object.values(manifest.standalone?.categories ?? {})) {
     for (const mod of category.modules) {
-      if (!mod.file) continue
-      const filePath = standaloneContentPath(mod.file)
-      if (filePath && fs.existsSync(filePath)) ids.push(mod.id)
+      if (mod.file && hasStandaloneContent(mod.file)) ids.push(mod.id)
     }
   }
   return ids

@@ -1,7 +1,6 @@
-import fs from 'fs'
 import manifest from '@/content/course-manifest.json'
 import type { CourseManifest, Track, Level, Module, StandaloneModule } from './types'
-import { getModuleContent, standaloneContentPath } from './content'
+import { getModuleContent, hasStandaloneContent } from './content'
 
 export function getManifest(): CourseManifest {
   return manifest as CourseManifest
@@ -93,9 +92,7 @@ export function getAllStandaloneParams(): { module: string }[] {
   const params: { module: string }[] = []
   for (const category of Object.values(m.standalone?.categories ?? {})) {
     for (const mod of category.modules) {
-      if (!mod.file) continue
-      const filePath = standaloneContentPath(mod.file)
-      if (filePath && fs.existsSync(filePath)) params.push({ module: mod.id })
+      if (mod.file && hasStandaloneContent(mod.file)) params.push({ module: mod.id })
     }
   }
   return params
