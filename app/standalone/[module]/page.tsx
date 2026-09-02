@@ -39,7 +39,11 @@ export default async function StandaloneModulePage({
       levelId={moduleData.level}
       moduleIndex={0}
       trackTitle="Standalone"
-      levelTitle={moduleData.title}
+      // Only reaches the feedback context now that backLabel overrides the
+      // sidebar link, so it carries the module's declared level rather than
+      // repeating the title: "Standalone / Beginner / <module>", the same
+      // shape a track module reports.
+      levelTitle={moduleData.level.charAt(0).toUpperCase() + moduleData.level.slice(1)}
       moduleTitle={title}
       moduleData={{
         id: moduleData.id,

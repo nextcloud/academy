@@ -37,16 +37,25 @@ export function getWrittenModules(manifest: CourseManifest): Record<string, numb
 }
 
 /**
- * Reads a standalone module's markdown.
+ * Resolves a standalone module's `file` to an absolute path, or null if it
+ * would escape the content tree.
  *
- * `file` comes from the manifest and is relative to `content/`. It is resolved
- * and then checked to be inside CONTENT_DIR, so a manifest entry cannot reach
- * outside the content tree.
+ * `file` comes from the manifest and is relative to `content/`. Resolving and
+ * then checking containment means a manifest entry cannot reach outside
+ * CONTENT_DIR. Mirrors moduleContentPath() for track modules, and exists
+ * separately from getStandaloneContent() so availability can be answered with
+ * a stat instead of reading the whole file.
  */
-export function getStandaloneContent(file: string): string | null {
+export function standaloneContentPath(file: string): string | null {
   const filePath = path.resolve(CONTENT_DIR, file)
   if (!filePath.startsWith(CONTENT_DIR + path.sep)) return null
-  if (!fs.existsSync(filePath)) return null
+  return filePath
+}
+
+/** Reads a standalone module's markdown. */
+export function getStandaloneContent(file: string): string | null {
+  const filePath = standaloneContentPath(file)
+  if (!filePath || !fs.existsSync(filePath)) return null
   return fs.readFileSync(filePath, 'utf-8')
 }
 
@@ -62,7 +71,9 @@ export function getWrittenStandaloneModules(manifest: CourseManifest): string[] 
   const ids: string[] = []
   for (const category of Object.values(manifest.standalone?.categories ?? {})) {
     for (const mod of category.modules) {
-      if (mod.file && getStandaloneContent(mod.file) !== null) ids.push(mod.id)
+      if (!mod.file) continue
+      const filePath = standaloneContentPath(mod.file)
+      if (filePath && fs.existsSync(filePath)) ids.push(mod.id)
     }
   }
   return ids
