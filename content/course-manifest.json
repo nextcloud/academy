@@ -37,7 +37,7 @@
         {
           "id": "pinboard-php-federation",
           "label": "Pinboard PHP — Federation Starting Point",
-          "repo": "nextcloud-dev-course/pinboard-php",
+          "repo": "miaulalala/pinboard-php",
           "git_tag": "FEDERATION_STARTING_POINT",
           "for_track": "exapp",
           "description": "Pre-built PHP Pinboard for ExApp-track students who haven't done the PHP track"
@@ -45,7 +45,7 @@
         {
           "id": "pinboard-exapp-federation",
           "label": "Pinboard ExApp — Federation Starting Point",
-          "repo": "nextcloud-dev-course/pinboard-exapp",
+          "repo": "miaulalala/pinboard-python",
           "git_tag": "FEDERATION_STARTING_POINT",
           "for_track": "php",
           "description": "Pre-built Python ExApp Pinboard for PHP-track students who haven't done the PHP track"
@@ -67,7 +67,7 @@
       "title": "PHP App Track",
       "tagline": "Build a Nextcloud app using PHP and Vue.js",
       "persona": "Knows PHP or JS. Has not worked with Nextcloud internals before.",
-      "repo": "nextcloud-dev-course/pinboard-php",
+      "repo": "miaulalala/pinboard-php",
       "counterpart_track": "exapp",
       "levels": {
         "beginner": {
@@ -1437,7 +1437,7 @@
       "title": "ExApp Track",
       "tagline": "Build a Nextcloud ExApp using Python and AppAPI",
       "persona": "Knows Python, wants to extend Nextcloud without writing PHP.",
-      "repo": "nextcloud-dev-course/pinboard-exapp",
+      "repo": "miaulalala/pinboard-python",
       "counterpart_track": "php",
       "levels": {
         "beginner": {
