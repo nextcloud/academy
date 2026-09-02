@@ -38,12 +38,16 @@
  * anything clickable should look clickable, and a missed class is a silent
  * regression nobody notices in review.
  *
- * `:not(:disabled)` keeps a disabled control showing the default cursor, which
- * is the correct affordance for something that cannot be clicked.
+ * Something that cannot be clicked should not claim it can, so both ways of
+ * saying "disabled" are excluded. They are not interchangeable: `:disabled`
+ * matches only real form controls, so it does nothing for a `[role='button']`
+ * div, which signals its state with `aria-disabled` instead. A native button
+ * can also be `aria-disabled` without the attribute, the pattern for keeping a
+ * control focusable but inert, so it needs both too.
  */
 @layer base {
-  button:not(:disabled),
-  [role='button']:not(:disabled) {
+  button:not(:disabled):not([aria-disabled='true']),
+  [role='button']:not([aria-disabled='true']) {
     cursor: pointer;
   }
 }
