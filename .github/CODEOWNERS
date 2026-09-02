@@ -1,0 +1,9 @@
+# Fallback owner for code review: ensures every pull request gets a reviewer
+# assigned automatically.
+#
+# GitHub never requests review from the author of a pull request, so this
+# covers everything except Anna's own PRs.
+#
+# The LAST matching pattern wins, so keep this line first and add narrower
+# rules below it as the repository grows maintainers.
+* @miaulalala
