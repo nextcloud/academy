@@ -27,6 +27,14 @@ const TRACK_STYLE: Record<string, { label: string; glyph: string; badge: string;
     badge: 'bg-nc-green-light text-nc-green-dark',
     icon: 'bg-nc-green-light',
   },
+  // Not a track, but it renders in the same card and section furniture, so it
+  // needs the same style shape rather than falling through to the neutral one.
+  standalone: {
+    label: 'Standalone',
+    glyph: '★',
+    badge: 'bg-nc-blue-light text-nc-blue-dark',
+    icon: 'bg-nc-blue-light',
+  },
 }
 
 const FALLBACK_TRACK_STYLE = {
@@ -75,6 +83,17 @@ interface CatalogModule {
   minutes: number
   /** Has content on disk. False means planned, and the card is inert.  */
   available: boolean
+  /**
+   * Where the card links to. Defaults to the track module path built from
+   * trackId/levelId/index; standalone modules pass their own, since they have
+   * no index to build one from.
+   */
+  href?: string
+  /**
+   * The small line above the title. Defaults to "M<index> · <track label>",
+   * which is meaningless for a module that belongs to no track.
+   */
+  eyebrow?: string
 }
 
 /** A track/level pair, as one section of the page. */
@@ -176,10 +195,28 @@ export default function CatalogClient({
       }
     }
 
+    /*
+     * Standalone modules get the same Done / In progress badge as track
+     * modules. They are keyed `standalone/<id>` to match the CatalogModule
+     * keys built below, and read from the progress store under the same
+     * `standalone/<level>/<id>` key the standalone route writes.
+     */
+    const availableStandalone = new Set(writtenStandalone)
+    for (const category of Object.values(manifest.standalone?.categories ?? {})) {
+      for (const mod of category.modules) {
+        if (!availableStandalone.has(mod.id)) continue
+        const prog = getModuleProgress('standalone', mod.level, mod.id)
+        if (prog.completed) m[`standalone/${mod.id}`] = 'done'
+        else if (prog.lastSection !== null || prog.completedSections.length > 0) {
+          m[`standalone/${mod.id}`] = 'started'
+        }
+      }
+    }
+
     setProgress(p)
     setCtas(c)
     setModuleStates(m)
-  }, [manifest, writtenModules])
+  }, [manifest, writtenModules, writtenStandalone])
 
   const sections = useMemo<CatalogSection[]>(() => {
     const flat: CatalogSection[] = []
@@ -263,15 +300,31 @@ export default function CatalogClient({
   const totalCount = sections.reduce((sum, s) => sum + s.modules.length, 0)
 
   /**
-   * The standalone modules that are actually renderable, flattened out of
-   * their categories. Availability is a filesystem fact decided on the server
-   * and passed in, matching how writtenModules works for track modules.
+   * The renderable standalone modules, shaped as CatalogModules so they render
+   * through the same ModuleCard as every track module.
+   *
+   * `index` is 0 because a standalone module has no position in a track, so
+   * `href` and `eyebrow` are supplied instead of being derived from it.
+   * Availability is a filesystem fact decided on the server and passed in,
+   * matching how writtenModules works for track modules.
    */
-  const standaloneModules = useMemo(() => {
+  const standaloneModules = useMemo<CatalogModule[]>(() => {
     const available = new Set(writtenStandalone)
     return Object.values(manifest.standalone?.categories ?? {})
       .flatMap(category => category.modules)
       .filter(mod => available.has(mod.id))
+      .map(mod => ({
+        key: `standalone/${mod.id}`,
+        trackId: 'standalone',
+        levelId: mod.level,
+        index: 0,
+        title: mod.title,
+        description: mod.description,
+        minutes: mod.estimated_minutes,
+        available: true,
+        href: `/standalone/${mod.id}`,
+        eyebrow: 'Standalone',
+      }))
   }, [manifest, writtenStandalone])
 
   return (
@@ -384,32 +437,19 @@ export default function CatalogClient({
         {standaloneModules.length > 0 && (
           <section className="mb-14">
             <div className="mb-6 flex flex-wrap items-center gap-4 border-b-2 border-rule pb-4">
-              <span className="flex items-center gap-2 rounded-md bg-nc-blue-light px-3.5 py-1.5 font-mono text-xs font-semibold tracking-[0.04em] text-nc-blue-dark">
-                ★ Standalone
+              <span className={`flex items-center gap-2 rounded-md px-3.5 py-1.5 font-mono text-xs font-semibold tracking-[0.04em] ${trackStyle('standalone').badge}`}>
+                {trackStyle('standalone').glyph} {trackStyle('standalone').label}
               </span>
               <h2 className="text-xl font-semibold text-ink">Before you start</h2>
               <span className="font-mono text-sm text-muted">
-                no track required
+                {standaloneModules.length} {standaloneModules.length === 1 ? 'module' : 'modules'} · no track required
               </span>
             </div>
-            <ul className="grid gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
               {standaloneModules.map(mod => (
-                <li key={mod.id}>
-                  <Link
-                    href={`/standalone/${mod.id}`}
-                    className="block rounded-lg border border-rule bg-white p-4 transition hover:border-nc-blue hover:shadow-sm"
-                  >
-                    <div className="flex items-baseline justify-between gap-3">
-                      <span className="font-semibold text-ink">{mod.title}</span>
-                      <span className="shrink-0 font-mono text-xs text-muted">
-                        ~{mod.estimated_minutes} min
-                      </span>
-                    </div>
-                    <p className="mt-1.5 text-sm text-muted">{mod.description}</p>
-                  </Link>
-                </li>
+                <ModuleCard key={mod.key} mod={mod} state={moduleStates[mod.key]} />
               ))}
-            </ul>
+            </div>
           </section>
         )}
 
@@ -594,7 +634,7 @@ function ModuleCard({ mod, state }: { mod: CatalogModule; state?: ModuleState })
         </span>
         <div className="flex-1">
           <div className="font-mono text-[0.68rem] uppercase tracking-[0.06em] text-muted">
-            M{mod.index} · {style.label}
+            {mod.eyebrow ?? `M${mod.index} · ${style.label}`}
           </div>
           <div className={`font-semibold leading-tight ${mod.available ? 'text-ink' : 'text-muted'}`}>
             {mod.title}
@@ -655,7 +695,7 @@ function ModuleCard({ mod, state }: { mod: CatalogModule; state?: ModuleState })
 
   return (
     <Link
-      href={`/${mod.trackId}/${mod.levelId}/${mod.index}`}
+      href={mod.href ?? `/${mod.trackId}/${mod.levelId}/${mod.index}`}
       className={`${CARD_SHELL} border-rule bg-white hover:-translate-y-0.5 hover:border-nc-blue hover:shadow-[0_2px_12px_rgba(0,0,0,0.08)]`}
     >
       {body}
