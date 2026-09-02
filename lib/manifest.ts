@@ -1,6 +1,6 @@
 import manifest from '@/content/course-manifest.json'
-import type { CourseManifest, Track, Level, Module } from './types'
-import { getModuleContent } from './content'
+import type { CourseManifest, Track, Level, Module, StandaloneModule } from './types'
+import { getModuleContent, hasStandaloneContent } from './content'
 
 export function getManifest(): CourseManifest {
   return manifest as CourseManifest
@@ -61,6 +61,38 @@ export function getAllModuleParams(): { track: string; level: string; module: st
           params.push({ track, level, module: String(mod.index) })
         }
       }
+    }
+  }
+  return params
+}
+
+/**
+ * Looks a standalone module up by its manifest id, across all categories.
+ *
+ * Ids are unique across the standalone section, so the category is an
+ * organisational detail the caller does not need to know.
+ */
+export function getStandaloneModule(id: string): StandaloneModule | null {
+  const m = getManifest()
+  for (const category of Object.values(m.standalone?.categories ?? {})) {
+    const found = category.modules.find(mod => mod.id === id)
+    if (found) return found
+  }
+  return null
+}
+
+/**
+ * Every standalone module that has a `file` whose markdown exists.
+ *
+ * Same gate as getAllModuleParams(): route generation follows what is written,
+ * not what is declared, so an unwritten module never becomes a 404.
+ */
+export function getAllStandaloneParams(): { module: string }[] {
+  const m = getManifest()
+  const params: { module: string }[] = []
+  for (const category of Object.values(m.standalone?.categories ?? {})) {
+    for (const mod of category.modules) {
+      if (mod.file && hasStandaloneContent(mod.file)) params.push({ module: mod.id })
     }
   }
   return params

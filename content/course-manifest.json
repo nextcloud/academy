@@ -2707,6 +2707,7 @@
             "id": "standalone-env-setup",
             "title": "Setting Up Your Development Environment",
             "level": "beginner",
+            "file": "shared/setup.md",
             "description": "Step-by-step installation guide for the Nextcloud development environment — Docker Desktop, nextcloud-docker-dev bootstrap, nvm, and Node.js — for macOS, Ubuntu, Windows, and GitHub Codespaces. Intended for developers who have not set up a Nextcloud dev environment before.",
             "estimated_minutes": 40
           },

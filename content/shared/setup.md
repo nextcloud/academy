@@ -34,12 +34,12 @@ In Terminal, run these commands one at a time:
 git clone https://github.com/nextcloud/nextcloud-docker-dev.git
 cd nextcloud-docker-dev
 ./bootstrap.sh
-sudo sh -c "echo '127.0.0.1 nextcloud.local' >> /etc/hosts"
 ```
 
 - `git clone` downloads the development environment.
-- `bootstrap.sh` sets up the Docker configuration. You may be asked for your system password at some point — this is normal.
-- The final line adds `nextcloud.local` to your hosts file so your browser can reach the development instance.
+- `bootstrap.sh` sets up the Docker configuration, and adds `nextcloud.local` to your hosts file so your browser can reach the development instance. That hosts step is why you may be asked for your system password — this is normal.
+
+> Do not add the hosts entry by hand as well. `bootstrap.sh` runs `scripts/update-hosts`, which checks whether the entry is already there before adding it. Appending it yourself afterwards just puts a duplicate line in `/etc/hosts`.
 
 > ⏳ The bootstrap step can take 15–20 minutes depending on your internet speed. A lot of output will scroll past — this is expected. The process is not frozen.
 
@@ -121,7 +121,6 @@ Open a terminal and run:
 git clone https://github.com/nextcloud/nextcloud-docker-dev.git
 cd nextcloud-docker-dev
 ./bootstrap.sh
-sudo sh -c "echo '127.0.0.1 nextcloud.local' >> /etc/hosts"
 ```
 
 > ⏳ The bootstrap step can take 15–20 minutes. The scrolling output is normal — the process is not frozen.
@@ -245,6 +244,8 @@ You should see a table header (`CONTAINER ID   IMAGE   ...`). If you get a permi
 ### 5: Edit the Windows hosts file
 
 Your browser needs to be able to resolve `nextcloud.local`. Because your browser runs on Windows (not inside WSL 2), you need to add an entry to the **Windows** hosts file.
+
+This is the one platform where you do this by hand. `bootstrap.sh` does add the entry automatically, but it runs inside WSL 2 and so only updates Linux's hosts file, which your Windows browser never reads.
 
 **5.1 — Open Notepad as Administrator:**
 1. Press the Windows key and type **notepad**.
