@@ -21,12 +21,24 @@ interface Props {
   sections: Section[]
   prevModule: Module | null
   nextModule: Module | null
+  /**
+   * Where the sidebar "back" link and the post-completion redirect go.
+   *
+   * Defaults to the module's own level listing, which is right for a track
+   * module. Standalone modules have no level page to return to, so they pass
+   * the catalogue instead.
+   */
+  backHref?: string
+  backLabel?: string
 }
 
 export default function ModulePlayerClient({
   trackId, levelId, moduleIndex, trackTitle, levelTitle,
   moduleTitle, moduleData, sections, prevModule, nextModule,
+  backHref, backLabel,
 }: Props) {
+  const listHref = backHref ?? `/${trackId}/${levelId}`
+  const listLabel = backLabel ?? levelTitle
   const router = useRouter()
   const moduleId = moduleData.id
   const [currentSection, setCurrentSection] = useState(0)
@@ -69,7 +81,7 @@ export default function ModulePlayerClient({
   // the top and bottom controls, so they can never disagree.
   const onwardHref = nextModule
     ? `/${trackId}/${levelId}/${nextModule.index}`
-    : `/${trackId}/${levelId}`
+    : listHref
 
   const handleComplete = () => {
     const allIds = sections.map(s => s.id)
@@ -96,15 +108,17 @@ export default function ModulePlayerClient({
         {/* Sidebar */}
         <aside className="w-64 bg-gray-900 text-white flex-shrink-0 overflow-y-auto hidden md:block">
           <div className="p-4 border-b border-gray-700">
-            <Link href={`/${trackId}/${levelId}`} className="text-xs text-gray-400 hover:text-gray-200 flex items-center gap-1 mb-3">
+            <Link href={listHref} className="text-xs text-gray-400 hover:text-gray-200 flex items-center gap-1 mb-3">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              {levelTitle}
+              {listLabel}
             </Link>
             <div className="text-xs text-gray-400 mb-1">{trackTitle}</div>
             <div className="text-sm font-semibold leading-snug">
-              <span className="text-gray-400">M{moduleIndex}.</span>{' '}
+              {moduleIndex > 0 && (
+                <span className="text-gray-400">M{moduleIndex}.{' '}</span>
+              )}
               {moduleData.title}
             </div>
             {moduleData.estimated_minutes && (

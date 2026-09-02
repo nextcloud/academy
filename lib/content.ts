@@ -37,6 +37,38 @@ export function getWrittenModules(manifest: CourseManifest): Record<string, numb
 }
 
 /**
+ * Reads a standalone module's markdown.
+ *
+ * `file` comes from the manifest and is relative to `content/`. It is resolved
+ * and then checked to be inside CONTENT_DIR, so a manifest entry cannot reach
+ * outside the content tree.
+ */
+export function getStandaloneContent(file: string): string | null {
+  const filePath = path.resolve(CONTENT_DIR, file)
+  if (!filePath.startsWith(CONTENT_DIR + path.sep)) return null
+  if (!fs.existsSync(filePath)) return null
+  return fs.readFileSync(filePath, 'utf-8')
+}
+
+/**
+ * The standalone modules that actually have content on disk.
+ *
+ * Gated on the file existing rather than on the manifest, for the same reason
+ * as {@link getWrittenModules}: the standalone section declares sixteen
+ * modules and one is written, so listing from the manifest alone would
+ * advertise fifteen dead links.
+ */
+export function getWrittenStandaloneModules(manifest: CourseManifest): string[] {
+  const ids: string[] = []
+  for (const category of Object.values(manifest.standalone?.categories ?? {})) {
+    for (const mod of category.modules) {
+      if (mod.file && getStandaloneContent(mod.file) !== null) ids.push(mod.id)
+    }
+  }
+  return ids
+}
+
+/**
  * Marks which lines sit inside a fenced code block.
  *
  * Course content is full of shell comments (`# Run from: …`) and embedded

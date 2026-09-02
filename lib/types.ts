@@ -23,9 +23,37 @@ export interface Track {
   levels: Record<string, Level>
 }
 
+/**
+ * A self-contained module that belongs to no track.
+ *
+ * `file` is a path relative to `content/`, and it is what makes a standalone
+ * module renderable: unlike track modules, whose markdown is found by
+ * convention at `content/<track>/<level>/<index>.md`, standalone modules have
+ * no index to derive a path from. A module without `file` is declared but not
+ * yet written, which is the majority of them.
+ */
+export interface StandaloneModule {
+  id: string
+  title: string
+  level: string
+  description: string
+  estimated_minutes: number
+  file?: string
+  official_docs?: string[]
+}
+
+export interface StandaloneCategory {
+  title: string
+  modules: StandaloneModule[]
+}
+
 export interface CourseManifest {
   course: { id: string; title: string; version: string }
   tracks: Record<string, Track>
+  standalone: {
+    description: string
+    categories: Record<string, StandaloneCategory>
+  }
 }
 
 export interface Section {

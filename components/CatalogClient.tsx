@@ -112,9 +112,11 @@ interface SectionCta {
 export default function CatalogClient({
   manifest,
   writtenModules,
+  writtenStandalone,
 }: {
   manifest: CourseManifest
   writtenModules: Record<string, number[]>
+  writtenStandalone: string[]
 }) {
   const [progress, setProgress] = useState<Record<string, number>>({})
   const [ctas, setCtas] = useState<Record<string, SectionCta>>({})
@@ -260,6 +262,18 @@ export default function CatalogClient({
   const visibleCount = visibleSections.reduce((sum, s) => sum + s.modules.length, 0)
   const totalCount = sections.reduce((sum, s) => sum + s.modules.length, 0)
 
+  /**
+   * The standalone modules that are actually renderable, flattened out of
+   * their categories. Availability is a filesystem fact decided on the server
+   * and passed in, matching how writtenModules works for track modules.
+   */
+  const standaloneModules = useMemo(() => {
+    const available = new Set(writtenStandalone)
+    return Object.values(manifest.standalone?.categories ?? {})
+      .flatMap(category => category.modules)
+      .filter(mod => available.has(mod.id))
+  }, [manifest, writtenStandalone])
+
   return (
     <div className="min-h-screen flex flex-col">
       <TopBar />
@@ -360,6 +374,45 @@ export default function CatalogClient({
       </div>
 
       <main className="mx-auto w-full max-w-[1200px] flex-1 px-6 pb-20 pt-12 md:px-8">
+        {/*
+          * "Before you start" sits above the tracks because the one module in
+          * it is a prerequisite for both of them: php/beginner/1 tells readers
+          * to come here first. Only modules whose markdown exists are listed,
+          * so the fifteen declared-but-unwritten standalone modules stay
+          * hidden rather than becoming dead links.
+          */}
+        {standaloneModules.length > 0 && (
+          <section className="mb-14">
+            <div className="mb-6 flex flex-wrap items-center gap-4 border-b-2 border-rule pb-4">
+              <span className="flex items-center gap-2 rounded-md bg-nc-blue-light px-3.5 py-1.5 font-mono text-xs font-semibold tracking-[0.04em] text-nc-blue-dark">
+                ★ Standalone
+              </span>
+              <h2 className="text-xl font-semibold text-ink">Before you start</h2>
+              <span className="font-mono text-sm text-muted">
+                no track required
+              </span>
+            </div>
+            <ul className="grid gap-3 md:grid-cols-2">
+              {standaloneModules.map(mod => (
+                <li key={mod.id}>
+                  <Link
+                    href={`/standalone/${mod.id}`}
+                    className="block rounded-lg border border-rule bg-white p-4 transition hover:border-nc-blue hover:shadow-sm"
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="font-semibold text-ink">{mod.title}</span>
+                      <span className="shrink-0 font-mono text-xs text-muted">
+                        ~{mod.estimated_minutes} min
+                      </span>
+                    </div>
+                    <p className="mt-1.5 text-sm text-muted">{mod.description}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {visibleSections.map(section => {
           const style = trackStyle(section.trackId)
           const written = section.modules.filter(m => m.available).length
