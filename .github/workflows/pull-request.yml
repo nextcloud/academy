@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: Pull request
+
+# Nothing verified pull requests before this: the only workflow was the Pages
+# deploy, which runs on push to main. So a change that broke the build was
+# discovered by the deploy failing, or worse, by the live site changing.
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push supersedes the previous run for the same ref.
+concurrency:
+  group: pull-request-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint, typecheck and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # Same version the Pages deploy uses, so a PR cannot pass here and
+          # then fail on deploy.
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # `next build` typechecks as part of the build, but running tsc first
+      # gives a clearer failure than a build that dies mid-compile.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # The real check. This is a static export, so the build is what actually
+      # renders every route: a missing generateStaticParams, a module whose
+      # markdown was deleted, or a manifest entry pointing at nothing all fail
+      # here rather than in production.
+      - name: Build static export
+        run: npm run build
