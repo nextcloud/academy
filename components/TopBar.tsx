@@ -13,9 +13,12 @@ export default function TopBar({ feedbackContext }: { feedbackContext?: string }
             footer, so every row of the page shares one content edge. */}
         <div className="max-w-[1200px] mx-auto px-6 md:px-8 h-full flex items-center gap-3 md:gap-8">
           <Link href="/" className="flex items-center gap-2.5 whitespace-nowrap font-semibold text-white/95 hover:text-white transition-colors">
-            <svg className="w-7 h-7 shrink-0" viewBox="0 0 256 256" fill="none" aria-hidden="true">
-              <circle cx="128" cy="128" r="128" fill="#0082C9" />
-              <path d="M128 64c-24.3 0-44.8 15.7-52.5 37.5C70.1 99.2 64.2 98 58 98c-24.3 0-44 19.7-44 44s19.7 44 44 44c3.3 0 6.5-.4 9.6-1 9.1 17.5 27.4 29.5 48.6 29.5 17.3 0 32.8-7.9 43.2-20.4C169 197 178.3 200 188 200c24.3 0 44-19.7 44-44s-19.7-44-44-44c-1.1 0-2.2 0-3.3.1C176.8 91.9 154.2 64 128 64z" fill="white" />
+            {/* Official Nextcloud logo mark, white variant for the navy header.
+                Path and colour come from the brand asset; do not recolour or
+                redraw it. viewBox is the mark's own bounding box, so the wordmark
+                is not included - the text next to it already says "Nextcloud". */}
+            <svg className="h-6 w-auto shrink-0" viewBox="14.26 35.2 121.49 55.31" aria-hidden="true">
+              <path d="M75.092,35.198c-12.592,0-23.265,8.537-26.573,20.103-2.875-6.135-9.105-10.433-16.281-10.433-9.869,0-17.981,8.112-17.981,17.981s8.112,17.985,17.981,17.985c7.176,0,13.406-4.301,16.281-10.437,3.308,11.567,13.981,20.107,26.573,20.107,12.499,0,23.118-8.411,26.51-19.848,2.928,5.997,9.081,10.177,16.155,10.177,9.869,0,17.985-8.116,17.985-17.985s-8.116-17.981-17.985-17.981c-7.074,0-13.227,4.178-16.155,10.174-3.393-11.436-14.011-19.844-26.51-19.844h0ZM75.092,45.753c9.506,0,17.099,7.59,17.099,17.096s-7.594,17.099-17.099,17.099-17.096-7.594-17.096-17.099,7.59-17.096,17.096-17.096ZM32.239,55.424c4.165,0,7.429,3.261,7.429,7.426s-3.265,7.429-7.429,7.429-7.426-3.265-7.426-7.429,3.261-7.426,7.426-7.426ZM117.757,55.424c4.165,0,7.429,3.261,7.429,7.426s-3.265,7.429-7.429,7.429-7.426-3.265-7.426-7.429,3.261-7.426,7.426-7.426Z" fill="#fff" />
             </svg>
             <span className="hidden sm:inline">Nextcloud Developer Course</span>
             <span className="sm:hidden">NC Course</span>
