@@ -529,6 +529,10 @@ export default function CatalogClient({
       <footer className="border-t border-rule bg-white py-6">
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-3 px-6 text-xs text-muted md:px-8">
           <span>{manifest.course.title} · v{manifest.course.version}</span>
+          {/* Stated plainly rather than as a badge: the claim is about how this
+              material was produced, so it has to be accurate about both halves,
+              the assistance and the review. */}
+          <span>Content and design were created with the help of AI and reviewed by a human.</span>
           <div className="flex gap-5">
             <a
               href="https://docs.nextcloud.com/server/latest/developer_manual/"
