@@ -43,7 +43,33 @@ cd nextcloud-docker-dev
 
 > ⏳ The bootstrap step can take 15–20 minutes depending on your internet speed. A lot of output will scroll past — this is expected. The process is not frozen.
 
-### 4: Start Nextcloud
+### 4: Check your hosts file
+
+`bootstrap.sh` added the development hostnames for you by running `scripts/update-hosts`. That script
+reads every hostname out of `docker-compose.yml` and adds it to `/etc/hosts`, which is how your browser
+knows `nextcloud.local` means "this machine". Confirm it worked:
+
+```bash
+grep nextcloud.local /etc/hosts
+```
+
+You should see two lines, one for IPv4 and one for IPv6:
+
+```
+127.0.0.1	nextcloud.local
+::1	nextcloud.local
+```
+
+If you see nothing, run the script yourself from inside the `nextcloud-docker-dev` folder:
+
+```bash
+./scripts/update-hosts
+```
+
+It asks for your password, because editing `/etc/hosts` needs root. Running it twice is safe — it
+checks each entry before adding it.
+
+### 5: Start Nextcloud
 
 ```bash
 docker compose up nextcloud proxy
@@ -53,7 +79,7 @@ The first time you run this, Docker downloads the container images — this may 
 
 Once the log output settles, open `http://nextcloud.local` in your browser and proceed to [Verify your setup](#verify-your-setup).
 
-### 5: Install nvm and Node.js
+### 6: Install nvm and Node.js
 
 nvm (Node Version Manager) lets you install and switch between Node.js versions. You will need Node.js later in the course for building app frontends.
 
@@ -125,7 +151,33 @@ cd nextcloud-docker-dev
 
 > ⏳ The bootstrap step can take 15–20 minutes. The scrolling output is normal — the process is not frozen.
 
-### 3: Start Nextcloud
+### 3: Check your hosts file
+
+`bootstrap.sh` added the development hostnames for you by running `scripts/update-hosts`. That script
+reads every hostname out of `docker-compose.yml` and adds it to `/etc/hosts`, which is how your browser
+knows `nextcloud.local` means "this machine". Confirm it worked:
+
+```bash
+grep nextcloud.local /etc/hosts
+```
+
+You should see two lines, one for IPv4 and one for IPv6:
+
+```
+127.0.0.1	nextcloud.local
+::1	nextcloud.local
+```
+
+If you see nothing, run the script yourself from inside the `nextcloud-docker-dev` folder:
+
+```bash
+./scripts/update-hosts
+```
+
+It asks for your password, because editing `/etc/hosts` needs root. Running it twice is safe — it
+checks each entry before adding it.
+
+### 4: Start Nextcloud
 
 ```bash
 docker compose up nextcloud proxy
@@ -133,7 +185,7 @@ docker compose up nextcloud proxy
 
 Once the log output settles, open `http://nextcloud.local` in your browser and proceed to [Verify your setup](#verify-your-setup).
 
-### 4: Install nvm and Node.js
+### 5: Install nvm and Node.js
 
 nvm (Node Version Manager) lets you install and switch between Node.js versions. You will need Node.js later in the course for building app frontends.
 
@@ -372,6 +424,49 @@ To avoid charges, stop your codespace when you are finished:
 1. Go to [github.com/codespaces](https://github.com/codespaces).
 2. Under **By repository**, click **nextcloud/server**.
 3. Click the three-dot menu next to your codespace and select **Delete**.
+
+---
+
+## Running against a specific Nextcloud version
+
+The `nextcloud` container tracks the **`master`** branch, which is wherever development currently is.
+It moves daily and can break under you.
+
+**The course builds the Pinboard app against Nextcloud 34**, so work against `stable34` instead. It is
+a separate container with its own hostname, and it needs its own copy of the source: `bootstrap.sh`
+clones `master` into `workspace/server` and nothing else.
+
+From inside the `nextcloud-docker-dev` folder:
+
+```bash
+git clone --branch stable34 https://github.com/nextcloud/server.git workspace/stable34
+cd workspace/stable34 && git submodule update --init && cd ../..
+docker compose up stable34 proxy
+```
+
+Then open **`http://stable34.local`** — not `nextcloud.local`, which is the master instance — and log
+in with **admin** / **admin**.
+
+`bootstrap.sh` already added `stable34.local` to your hosts file along with every other hostname, so
+there is nothing to add. Check the same way as before if the page does not load:
+
+```bash
+grep stable34.local /etc/hosts
+```
+
+occ commands take the container name as their first argument, so for this instance it is:
+
+```bash
+./scripts/occ.sh stable34 -- <your-command>
+```
+
+> ℹ️ The two instances are independent: separate source, separate database, separate apps. You can run
+> both at once and reach each at its own hostname, which is also how you reproduce a bug on the version
+> a user reported it on.
+
+> ℹ️ **On Codespaces**, pick the branch instead: select `stable34` on
+> [codespaces.new/nextcloud/server](https://codespaces.new/nextcloud/server) before creating the
+> codespace.
 
 ---
 
