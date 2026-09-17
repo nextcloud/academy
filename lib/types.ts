@@ -48,7 +48,16 @@ export interface StandaloneCategory {
 }
 
 export interface CourseManifest {
-  course: { id: string; title: string; version: string }
+  course: {
+    id: string
+    title: string
+    version: string
+    /**
+     * The Nextcloud major the course is written against. Substituted into module
+     * markdown wherever `{{nextcloudVersion}}` appears; see lib/content.ts.
+     */
+    targetNextcloudVersion: string
+  }
   tracks: Record<string, Track>
   standalone: {
     description: string
