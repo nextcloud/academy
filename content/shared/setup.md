@@ -396,7 +396,7 @@ Codespaces is a good option for workshops or if you want to try Nextcloud develo
 
 Log in to GitHub, then go to [codespaces.new/nextcloud/server](https://codespaces.new/nextcloud/server) and click **Create codespace**. You do not need to change any settings.
 
-> ℹ️ If you want to develop against a specific stable Nextcloud version rather than the latest development branch, select a branch named `stableXX` (e.g. `stable34`) before creating the codespace. The `master` branch may occasionally contain breaking changes.
+> ℹ️ If you want to develop against a specific stable Nextcloud version rather than the latest development branch, select a branch named `stableXX` (e.g. `stable{{nextcloudVersion}}`) before creating the codespace. The `master` branch may occasionally contain breaking changes.
 
 > ℹ️ **Firefox users:** if you see an "Oh no, it looks like you are offline!" error, this is caused by Firefox's Enhanced Tracking Protection. Add the codespace URL as an exception under **Settings → Privacy & Security → Enhanced Tracking Protection → Manage Exceptions**, then refresh.
 
@@ -432,39 +432,39 @@ To avoid charges, stop your codespace when you are finished:
 The `nextcloud` container tracks the **`master`** branch, which is wherever development currently is.
 It moves daily and can break under you.
 
-**The course builds the Pinboard app against Nextcloud 34**, so work against `stable34` instead. It is
+**The course builds the Pinboard app against Nextcloud {{nextcloudVersion}}**, so work against `stable{{nextcloudVersion}}` instead. It is
 a separate container with its own hostname, and it needs its own copy of the source: `bootstrap.sh`
 clones `master` into `workspace/server` and nothing else.
 
 From inside the `nextcloud-docker-dev` folder:
 
 ```bash
-git clone --branch stable34 https://github.com/nextcloud/server.git workspace/stable34
-cd workspace/stable34 && git submodule update --init && cd ../..
-docker compose up stable34 proxy
+git clone --branch stable{{nextcloudVersion}} https://github.com/nextcloud/server.git workspace/stable{{nextcloudVersion}}
+cd workspace/stable{{nextcloudVersion}} && git submodule update --init && cd ../..
+docker compose up stable{{nextcloudVersion}} proxy
 ```
 
-Then open **`http://stable34.local`** — not `nextcloud.local`, which is the master instance — and log
+Then open **`http://stable{{nextcloudVersion}}.local`** — not `nextcloud.local`, which is the master instance — and log
 in with **admin** / **admin**.
 
-`bootstrap.sh` already added `stable34.local` to your hosts file along with every other hostname, so
+`bootstrap.sh` already added `stable{{nextcloudVersion}}.local` to your hosts file along with every other hostname, so
 there is nothing to add. Check the same way as before if the page does not load:
 
 ```bash
-grep stable34.local /etc/hosts
+grep stable{{nextcloudVersion}}.local /etc/hosts
 ```
 
 occ commands take the container name as their first argument, so for this instance it is:
 
 ```bash
-./scripts/occ.sh stable34 -- <your-command>
+./scripts/occ.sh stable{{nextcloudVersion}} -- <your-command>
 ```
 
 > ℹ️ The two instances are independent: separate source, separate database, separate apps. You can run
 > both at once and reach each at its own hostname, which is also how you reproduce a bug on the version
 > a user reported it on.
 
-> ℹ️ **On Codespaces**, pick the branch instead: select `stable34` on
+> ℹ️ **On Codespaces**, pick the branch instead: select `stable{{nextcloudVersion}}` on
 > [codespaces.new/nextcloud/server](https://codespaces.new/nextcloud/server) before creating the
 > codespace.
 
