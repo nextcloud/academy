@@ -386,6 +386,8 @@ Whichever path you followed, confirm your environment is working:
 If you can see the Nextcloud Files app after logging in, your environment is ready.
 
 > **Troubleshooting (local setups):** If `http://nextcloud.local` does not load, open Docker Desktop and check that the containers `master-nextcloud-1` and `master-proxy-1` are listed as running. On macOS you can also click the **Open in browser** icon next to the container entry in Docker Desktop.
+>
+> If you have a VPN running, it may interfere with the Docker local network. Try disabling it to see if it fixes the problem for you.
 
 ---
 
