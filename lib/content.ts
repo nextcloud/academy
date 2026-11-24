@@ -1,8 +1,35 @@
 import fs from 'fs'
 import path from 'path'
+import manifest from '@/content/course-manifest.json'
 import type { CourseManifest, Section } from './types'
 
 const CONTENT_DIR = path.join(process.cwd(), 'content')
+
+/**
+ * Values substituted into module markdown, so the Nextcloud major the course
+ * targets lives in the manifest rather than in prose across a dozen files.
+ *
+ * Deliberately narrow: only facts that are *always* true of whatever version is
+ * pinned belong here - the `info.xml` version range, the instance a module
+ * promises, the expected `occ status` output, the `stableXX` branch name.
+ *
+ * Claims that are true of one release and not the next - which PHP versions it
+ * supports, what a given upgrade removed, which library version pairs with it -
+ * must stay written out. Substituting them would turn a visibly stale number
+ * into a confidently wrong sentence, which is worse. Those live in the
+ * per-release "NC<version> notes" section of each module and are re-read by a
+ * human when the pin moves.
+ */
+const VARIABLES: Record<string, string> = {
+  nextcloudVersion: (manifest as CourseManifest).course.targetNextcloudVersion,
+}
+
+/** Replaces `{{name}}` with its value; unknown names are left untouched. */
+export function substituteVariables(markdown: string): string {
+  return markdown.replace(/\{\{(\w+)\}\}/g, (whole, name: string) =>
+    name in VARIABLES ? VARIABLES[name] : whole
+  )
+}
 
 function moduleContentPath(trackId: string, levelId: string, moduleIndex: number): string {
   return path.join(CONTENT_DIR, trackId, levelId, `${moduleIndex}.md`)
@@ -11,7 +38,7 @@ function moduleContentPath(trackId: string, levelId: string, moduleIndex: number
 export function getModuleContent(trackId: string, levelId: string, moduleIndex: number): string | null {
   const filePath = moduleContentPath(trackId, levelId, moduleIndex)
   if (!fs.existsSync(filePath)) return null
-  return fs.readFileSync(filePath, 'utf-8')
+  return substituteVariables(fs.readFileSync(filePath, 'utf-8'))
 }
 
 /**
@@ -79,7 +106,7 @@ function standaloneContentFile(file: string): string | null {
 export function getStandaloneContent(file: string): string | null {
   const filePath = standaloneContentFile(file)
   if (!filePath) return null
-  return fs.readFileSync(filePath, 'utf-8')
+  return substituteVariables(fs.readFileSync(filePath, 'utf-8'))
 }
 
 /** Whether a standalone module's `file` names readable markdown. */

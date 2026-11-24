@@ -6,7 +6,8 @@
     "tracks": [
       "php",
       "exapp"
-    ]
+    ],
+    "targetNextcloudVersion": "34"
   },
   "shared": {
     "foundations": [
