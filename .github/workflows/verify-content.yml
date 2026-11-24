@@ -1,0 +1,71 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: Verify course content
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'lib/content.ts'
+      - 'scripts/verify-content.mjs'
+      - '.github/workflows/verify-content.yml'
+  schedule:
+    # Weekly, Monday morning. The things this catches - a vendor moving a URL,
+    # an image tag disappearing, nextcloud-docker-dev changing under the setup
+    # module - drift over months, not hours. Running it more often would add
+    # nothing except load on other people's servers.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    name: Offline checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/verify-content.mjs
+
+  online:
+    name: Online checks
+    # Never on pull requests: a dead third-party link must not block somebody's
+    # typo fix. This reports, it does not gate.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run online checks
+        id: verify
+        run: |
+          set +e
+          node scripts/verify-content.mjs --online > report.txt 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat report.txt
+
+      - name: Report failures
+        if: steps.verify.outputs.exit_code != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: 'Course content verification is failing'
+        run: |
+          BODY=$(printf 'The weekly content check found problems. Full output:\n\n```\n%s\n```\n\nRun locally with `npm run verify:content -- --online`.\n\n[Workflow run](%s/%s/actions/runs/%s)\n' \
+            "$(cat report.txt)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")
+          # One issue, kept up to date, rather than a new one every Monday.
+          EXISTING=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label documentation
+          fi
